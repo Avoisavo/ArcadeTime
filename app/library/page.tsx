@@ -94,28 +94,28 @@ export default function Library() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-gray-900 to-black arcade-bg">
       <Header activeTab="Games" />
       <div className="flex flex-1 relative">
         <Navbar activePage="my games" />
         <div className="min-h-screen p-8 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)] ml-64 flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-3xl font-bold mb-8">Arcade Game Library</h1>
+            <h1 className="text-4xl font-bold mb-8 text-white arcade-text-shadow">Arcade Game Library</h1>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {randomGames.map((game) => (
                 <div 
                   key={game.id}
-                  className={`border rounded-lg p-6 cursor-pointer transition-all ${
+                  className={`border rounded-lg p-6 cursor-pointer transition-all arcade-card-glow ${
                     selectedGame?.id === game.id 
-                      ? "border-blue-500 shadow-lg bg-blue-50 dark:bg-blue-900/20" 
-                      : "border-gray-200 hover:border-blue-300 hover:shadow"
+                      ? 'border-purple-500 shadow-lg bg-gradient-to-br from-purple-900/20 to-blue-900/20 arcade-selected-card' 
+                      : 'border-gray-800 hover:border-purple-500/50 hover:shadow-lg hover:bg-gradient-to-br hover:from-purple-900/10 hover:to-blue-900/10'
                   }`}
                   onClick={() => (game.title === "Stick-Man" || game.title === "Space Invaders") ? null : handleSelectGame(game)}
                 >
                   {game.title === "Stick-Man" ? (
                     <Link href="/stickman" className="flex flex-col h-full">
-                      <div className="bg-gray-100 dark:bg-gray-800 rounded-md h-48 relative mb-4 flex items-center justify-center overflow-hidden">
+                      <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-md h-48 relative mb-4 flex items-center justify-center overflow-hidden arcade-game-container">
                         {imageErrors[game.id] ? (
                           <GameImageFallback title={game.title} color={game.color} />
                         ) : (
@@ -134,13 +134,13 @@ export default function Library() {
                           </div>
                         )}
                       </div>
-                      <h2 className="text-xl font-semibold mb-2">{game.title}</h2>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">{game.description}</p>
-                      <p className="text-gray-500 text-xs mt-auto">Released: {game.year}</p>
+                      <h2 className="text-xl font-semibold mb-2 text-white arcade-game-title">{game.title}</h2>
+                      <p className="text-gray-400 text-sm mb-2">{game.description}</p>
+                      <p className="text-purple-400 text-xs mt-auto">Released: {game.year}</p>
                     </Link>
                   ) : game.title === "Space Invaders" ? (
                     <Link href="/spaceinvaders" className="flex flex-col h-full">
-                      <div className="bg-gray-100 dark:bg-gray-800 rounded-md h-48 relative mb-4 flex items-center justify-center overflow-hidden">
+                      <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-md h-48 relative mb-4 flex items-center justify-center overflow-hidden arcade-game-container">
                         {imageErrors[game.id] ? (
                           <GameImageFallback title={game.title} color={game.color} />
                         ) : (
@@ -159,13 +159,13 @@ export default function Library() {
                           </div>
                         )}
                       </div>
-                      <h2 className="text-xl font-semibold mb-2">{game.title}</h2>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">{game.description}</p>
-                      <p className="text-gray-500 text-xs mt-auto">Released: {game.year}</p>
+                      <h2 className="text-xl font-semibold mb-2 text-white arcade-game-title">{game.title}</h2>
+                      <p className="text-gray-400 text-sm mb-2">{game.description}</p>
+                      <p className="text-purple-400 text-xs mt-auto">Released: {game.year}</p>
                     </Link>
                   ) : (
                     <div className="flex flex-col h-full">
-                      <div className="bg-gray-100 dark:bg-gray-800 rounded-md h-48 relative mb-4 flex items-center justify-center overflow-hidden">
+                      <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-md h-48 relative mb-4 flex items-center justify-center overflow-hidden arcade-game-container">
                         {imageErrors[game.id] ? (
                           <GameImageFallback title={game.title} color={game.color} />
                         ) : (
@@ -184,9 +184,9 @@ export default function Library() {
                           </div>
                         )}
                       </div>
-                      <h2 className="text-xl font-semibold mb-2">{game.title}</h2>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">{game.description}</p>
-                      <p className="text-gray-500 text-xs mt-auto">Released: {game.year}</p>
+                      <h2 className="text-xl font-semibold mb-2 text-white arcade-game-title">{game.title}</h2>
+                      <p className="text-gray-400 text-sm mb-2">{game.description}</p>
+                      <p className="text-purple-400 text-xs mt-auto">Released: {game.year}</p>
                     </div>
                   )}
                 </div>
@@ -194,11 +194,11 @@ export default function Library() {
             </div>
             
             {selectedGame && (
-              <div className="mt-12 border-t pt-8">
-                <h2 className="text-2xl font-bold mb-4">Selected Game: {selectedGame.title}</h2>
-                <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
+              <div className="mt-12 border-t border-purple-900/30 pt-8">
+                <h2 className="text-2xl font-bold mb-4 text-white arcade-text-shadow">Selected Game: {selectedGame.title}</h2>
+                <div className="bg-gradient-to-br from-gray-900 to-black p-6 rounded-lg border border-purple-900/30 arcade-details-card">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="bg-gray-100 dark:bg-gray-700 rounded-md h-64 relative flex items-center justify-center overflow-hidden">
+                    <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-md h-64 relative flex items-center justify-center overflow-hidden arcade-game-container">
                       {imageErrors[selectedGame.id] ? (
                         <GameImageFallback title={selectedGame.title} color={selectedGame.color} />
                       ) : (
@@ -218,11 +218,11 @@ export default function Library() {
                       )}
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold mb-3">{selectedGame.title}</h3>
-                      <p className="text-gray-600 dark:text-gray-300 mb-4">{selectedGame.description}</p>
-                      <p className="text-gray-500 mb-8">Released: {selectedGame.year}</p>
+                      <h3 className="text-xl font-semibold mb-3 text-white arcade-text-glow">{selectedGame.title}</h3>
+                      <p className="text-gray-400 mb-4">{selectedGame.description}</p>
+                      <p className="text-purple-400 mb-8">Released: {selectedGame.year}</p>
                       <Link href={selectedGame.title === "Stick-Man" ? "/stickman" : selectedGame.title === "Space Invaders" ? "/spaceinvaders" : "#"}>
-                        <button className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors">
+                        <button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white px-6 py-2 rounded-md font-bold uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_10px_rgba(138,43,226,0.5)] hover:shadow-[0_0_15px_rgba(138,43,226,0.8)]">
                           Play Now
                         </button>
                       </Link>
@@ -233,13 +233,53 @@ export default function Library() {
             )}
             
             <div className="mt-12">
-              <Link href="/" className="text-blue-500 hover:underline">
+              <Link href="/" className="text-purple-400 hover:text-purple-300 hover:underline transition-colors arcade-text-glow text-sm uppercase tracking-wider font-bold">
                 Back to Home
               </Link>
             </div>
           </div>
         </div>
       </div>
+      <style jsx global>{`
+        .arcade-bg {
+          background-image: 
+            linear-gradient(to bottom, rgba(25,25,25,1) 0%, rgba(10,10,10,1) 100%),
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+          background-blend-mode: multiply;
+        }
+        
+        .arcade-text-shadow {
+          text-shadow: 
+            0 0 2px #fff, 
+            0 0 5px rgba(138,43,226,0.8), 
+            0 0 10px rgba(138,43,226,0.5);
+        }
+        
+        .arcade-text-glow {
+          text-shadow: 0 0 2px #fff, 0 0 5px rgba(138,43,226,0.8);
+        }
+        
+        .arcade-card-glow:hover {
+          box-shadow: 0 0 15px rgba(138,43,226,0.3);
+        }
+        
+        .arcade-selected-card {
+          box-shadow: 0 0 20px rgba(138,43,226,0.4) !important;
+        }
+        
+        .arcade-game-title {
+          text-shadow: 0 0 2px #fff, 0 0 5px rgba(138,43,226,0.6);
+        }
+        
+        .arcade-game-container {
+          box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+          border: 1px solid rgba(138,43,226,0.3);
+        }
+        
+        .arcade-details-card {
+          box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+      `}</style>
     </div>
   );
 }

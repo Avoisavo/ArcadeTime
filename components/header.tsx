@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
 
@@ -14,21 +16,43 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
   ];
 
   return (
-    <header className="bg-black text-white p-4 flex justify-between items-center sticky top-0 z-50">
-      <div className="flex space-x-12 mx-auto">
+    <header className="bg-black border-b border-purple-700/30 text-white p-4 flex justify-between items-center sticky top-0 z-50 arcade-header">
+      <div className="flex space-x-12 mx-auto relative">
         {tabs.map((tab) => (
           <Link 
             key={tab.name} 
             href={tab.path}
-            className={`text-sm font-medium py-2 px-4 ${activeTab === tab.name ? 'text-white border-b-2 border-white' : 'text-gray-400 hover:text-gray-200'}`}
+            className={`text-sm font-medium py-2 px-6 relative group overflow-hidden transition-all duration-300 ${
+              activeTab === tab.name 
+                ? 'text-white arcade-text-glow' 
+                : 'text-gray-400 hover:text-gray-200'
+            }`}
           >
-            {tab.name}
+            {activeTab === tab.name && (
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-purple-500 to-blue-500 animate-pulse"></span>
+            )}
+            <span className="relative z-10 uppercase tracking-wider font-bold">{tab.name}</span>
+            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-900/40 to-blue-900/40 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100"></span>
           </Link>
         ))}
       </div>
-      <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded text-sm absolute right-8">
+      <button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white py-2 px-6 rounded-md text-sm absolute right-8 uppercase font-bold tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_10px_rgba(138,43,226,0.5)] hover:shadow-[0_0_15px_rgba(138,43,226,0.8)]">
         Login with Flow Wallet
       </button>
+
+      <style jsx global>{`
+        .arcade-header {
+          background-image: 
+            linear-gradient(to right, rgba(15,15,15,1) 0%, rgba(5,5,5,1) 100%),
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+          background-blend-mode: multiply;
+          box-shadow: 0 0 20px rgba(0,0,0,0.7);
+        }
+        
+        .arcade-text-glow {
+          text-shadow: 0 0 2px #fff, 0 0 5px rgba(138,43,226,0.8);
+        }
+      `}</style>
     </header>
   );
 };

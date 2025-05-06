@@ -454,11 +454,11 @@ export default function StickmanGame() {
   }, [gameStarted, gameOver]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 py-8">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 to-black arcade-bg py-8">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-white mb-2">Stick-Man Battle</h1>
+        <h1 className="text-4xl font-bold text-white mb-2 arcade-text-shadow yellow-neon">Stick-Man Battle</h1>
         {!gameStarted && !gameOver && (
-          <p className="text-gray-300 text-center max-w-md">
+          <p className="text-yellow-300 text-center max-w-md">
             Control your stick figure warrior and defeat your opponent in an epic duel!
           </p>
         )}
@@ -469,38 +469,118 @@ export default function StickmanGame() {
           ref={canvasRef} 
           width={800} 
           height={600} 
-          className="border-4 border-gray-700 rounded-lg shadow-lg"
+          className="border-4 border-yellow-500/30 rounded-lg shadow-lg arcade-canvas yellow-neon-border"
         />
         
         {!gameStarted && !gameOver && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/80">
-            <h2 className="text-4xl font-bold text-white mb-8">Stick-Man Battle</h2>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-900/90 to-black/90">
+            <h2 className="text-5xl font-bold text-white mb-8 arcade-title-glow yellow-pulse">Stick-Man Battle</h2>
             <button 
               onClick={startGame}
-              className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-full text-xl transition-colors"
+              className="bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-600 hover:to-yellow-400 text-black font-bold py-3 px-10 rounded-full text-xl uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(255,215,0,0.5)] hover:shadow-[0_0_25px_rgba(255,215,0,0.8)]"
             >
               Start Game
             </button>
-            <div className="mt-8 text-gray-300">
-              <p><span className="font-bold">Controls:</span></p>
-              <ul className="mt-2 space-y-1 text-sm">
-                <li>Arrow keys: Move left/right</li>
-                <li>Space/Up arrow: Jump</li>
-                <li>Z key: Attack</li>
+            <div className="mt-12 text-gray-300">
+              <p className="text-center text-yellow-300 font-bold uppercase tracking-wider arcade-text-glow yellow-glow">Controls:</p>
+              <ul className="mt-4 space-y-2 text-sm grid grid-cols-1 gap-2">
+                <li className="bg-gradient-to-r from-yellow-900/20 to-yellow-800/20 px-6 py-2 rounded border border-yellow-700/30">
+                  <span className="text-yellow-400 font-medium">Arrow keys:</span> Move left/right
+                </li>
+                <li className="bg-gradient-to-r from-yellow-900/20 to-yellow-800/20 px-6 py-2 rounded border border-yellow-700/30">
+                  <span className="text-yellow-400 font-medium">Space/Up arrow:</span> Jump
+                </li>
+                <li className="bg-gradient-to-r from-yellow-900/20 to-yellow-800/20 px-6 py-2 rounded border border-yellow-700/30">
+                  <span className="text-yellow-400 font-medium">Z key:</span> Attack
+                </li>
               </ul>
             </div>
           </div>
         )}
       </div>
       
-      <div className="mt-6">
+      <div className="mt-8">
         <Link 
           href="/library" 
-          className="text-blue-400 hover:text-blue-300 transition-colors font-medium"
+          className="text-yellow-400 hover:text-yellow-300 transition-colors font-bold uppercase tracking-wider arcade-text-glow yellow-glow"
         >
           ← Back to Game Library
         </Link>
       </div>
+
+      <style jsx global>{`
+        .arcade-bg {
+          background-image: 
+            linear-gradient(to bottom, rgba(25,25,25,1) 0%, rgba(10,10,10,1) 100%),
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+          background-blend-mode: multiply;
+        }
+        
+        .arcade-text-shadow {
+          text-shadow: 
+            0 0 2px #fff, 
+            0 0 5px rgba(138,43,226,0.8), 
+            0 0 10px rgba(138,43,226,0.5);
+        }
+        
+        .arcade-text-glow {
+          text-shadow: 0 0 2px #fff, 0 0 5px rgba(138,43,226,0.8);
+        }
+
+        .arcade-title-glow {
+          text-shadow: 
+            0 0 5px #fff, 
+            0 0 10px #fff, 
+            0 0 15px #8a2be2, 
+            0 0 20px #8a2be2, 
+            0 0 25px #8a2be2;
+          animation: pulsate 2s infinite alternate;
+        }
+
+        .arcade-canvas {
+          box-shadow: 
+            0 0 0 4px rgba(138,43,226,0.3),
+            0 0 30px rgba(0,0,0,0.8);
+        }
+
+        /* Yellow Neon Styles */
+        .yellow-neon {
+          text-shadow: 
+            0 0 2px #fff, 
+            0 0 5px rgba(255,255,0,0.8), 
+            0 0 10px rgba(255,215,0,0.5);
+        }
+        
+        .yellow-glow {
+          text-shadow: 0 0 2px #fff, 0 0 5px rgba(255,215,0,0.8);
+        }
+
+        .yellow-pulse {
+          text-shadow: 
+            0 0 5px #fff, 
+            0 0 10px #fff, 
+            0 0 15px #ffd700, 
+            0 0 20px #ffd700, 
+            0 0 25px #ffd700;
+          animation: yellowPulsate 2s infinite alternate;
+        }
+
+        .yellow-neon-border {
+          box-shadow: 
+            0 0 0 4px rgba(255,215,0,0.3),
+            0 0 30px rgba(255,215,0,0.2);
+        }
+
+        @keyframes pulsate {
+          0% { opacity: 0.9; }
+          100% { opacity: 1; }
+        }
+
+        @keyframes yellowPulsate {
+          0% { opacity: 0.9; text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ffd700, 0 0 20px #ffd700, 0 0 25px #ffd700; }
+          100% { opacity: 1; text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ffd700, 0 0 20px #ffd700, 0 0 30px #ffd700, 0 0 40px #ffd700; }
+        }
+      `}</style>
     </div>
   );
 }
