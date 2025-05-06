@@ -37,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
         ))}
       </div>
       <button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white py-2 px-6 rounded-md text-sm absolute right-8 uppercase font-bold tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_10px_rgba(138,43,226,0.5)] hover:shadow-[0_0_15px_rgba(138,43,226,0.8)]">
-        Login with Flow Wallet
+        Login with Solana Wallet
       </button>
 
       <style jsx global>{`
