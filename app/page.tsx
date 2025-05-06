@@ -1,103 +1,114 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
+import { Suspense } from "react";
+
+// Animated flickering text component for arcade aesthetic
+const FlickeringText = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="relative">
+      <h1 className="text-6xl md:text-8xl font-bold text-center text-white arcade-text-shadow animate-flicker">
+        {children}
+      </h1>
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-lg opacity-50 arcade-glow"></div>
+    </div>
+  );
+};
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-black overflow-hidden relative">
+      {/* Arcade-style background grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0)_1px,transparent_1px)] bg-[size:30px_30px] [background-position:center] scale-[3] opacity-30 z-0"></div>
+      
+      {/* Animated noise texture overlay */}
+      <div className="absolute inset-0 bg-noise opacity-10 mix-blend-overlay"></div>
+      
+      {/* Main content */}
+      <main className="flex flex-col items-center justify-center gap-16 z-10 px-4">
+        <FlickeringText>Arcade Time</FlickeringText>
+        
+        <Link href="/library" className="group">
+          <button className="px-16 py-4 text-xl bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg text-white font-bold uppercase tracking-wider hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 shadow-[0_0_15px_rgba(138,43,226,0.8)] hover:shadow-[0_0_25px_rgba(138,43,226,1)] focus:outline-none group relative overflow-hidden">
+            <span className="relative z-10">Start Game</span>
+            <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></span>
+            <span className="absolute bottom-0 left-0 w-full h-1 bg-white origin-left transform scale-x-0 group-hover:scale-x-100 transition-transform"></span>
+          </button>
+        </Link>
+        
+        {/* Decorative pixel art elements */}
+        <div className="absolute bottom-10 left-10 hidden md:block opacity-70">
+          <Image 
+            src="/arcade/pacman.png" 
+            alt="Pac-Man" 
+            width={60} 
+            height={60} 
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+            }}
+          />
+        </div>
+        
+        <div className="absolute top-10 right-10 hidden md:block opacity-70">
+          <Image 
+            src="/arcade/space-invaders.png" 
+            alt="Space Invader" 
+            width={60} 
+            height={60}
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+            }}
+          />
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      
+      {/* Add custom styles for arcade aesthetics */}
+      <style jsx global>{`
+        .arcade-text-shadow {
+          text-shadow: 
+            0 0 5px #fff, 
+            0 0 10px #fff, 
+            0 0 15px #8a2be2, 
+            0 0 20px #8a2be2, 
+            0 0 25px #8a2be2, 
+            0 0 30px #8a2be2, 
+            0 0 35px #8a2be2;
+        }
+        
+        .arcade-glow {
+          filter: blur(8px);
+          animation: glow 2s infinite alternate;
+        }
+        
+        @keyframes glow {
+          from {
+            opacity: 0.3;
+          }
+          to {
+            opacity: 0.6;
+          }
+        }
+        
+        .bg-noise {
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        
+        @keyframes flicker {
+          0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+            opacity: 0.99;
+          }
+          20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+            opacity: 0.4;
+          }
+        }
+        
+        .animate-flicker {
+          animation: flicker 4s linear infinite;
+        }
+      `}</style>
     </div>
   );
 }
