@@ -2,6 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { Press_Start_2P } from 'next/font/google';
+
+const pressStart2P = Press_Start_2P({
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export default function SpaceInvaders() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -60,9 +67,9 @@ export default function SpaceInvaders() {
       const enemyRow: Array<{x: number, y: number, alive: boolean, type: number}> = [];
       
       // Set enemy type based on row
-      let type = 0; // Blue enemies (bottom rows)
-      if (row === 0) type = 2; // Yellow enemies (top row)
-      else if (row === 1) type = 1; // Purple enemies (middle row)
+      let type = 0; // Light purple enemies (bottom rows)
+      if (row === 0) type = 2; // Bright purple enemies (top row)
+      else if (row === 1) type = 1; // Medium purple enemies (middle row)
       
       // Calculate how many ships to put in this row to form a triangle
       // Top row has 1 ship, middle row has 3, bottom row has 5
@@ -123,6 +130,13 @@ export default function SpaceInvaders() {
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    // Add click handler to redirect to library
+    const handleCanvasClick = () => {
+      window.location.href = '/library';
+    };
+    
+    canvas.addEventListener('click', handleCanvasClick);
 
     // Set up event listeners
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -373,44 +387,90 @@ export default function SpaceInvaders() {
     };
 
     function drawStars(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
-      ctx.fillStyle = 'white';
-      
-      // Draw random stars
+      // Draw random stars with purple hues
       for (let i = 0; i < 100; i++) {
         const x = (Math.sin(i * 0.1 + Date.now() * 0.0005) + 1) * canvas.width/2;
         const y = (Math.cos(i * 0.13 + Date.now() * 0.0003) + 1) * canvas.height/2;
         const size = (Math.sin(i * 0.5 + Date.now() * 0.001) + 1) * 1.5;
+        
+        // Random purple shade for stars
+        const purpleShade = Math.floor(Math.random() * 3);
+        if (purpleShade === 0) ctx.fillStyle = '#a78bfa'; // purple-400
+        else if (purpleShade === 1) ctx.fillStyle = '#c4b5fd'; // purple-300
+        else ctx.fillStyle = '#f5f3ff'; // white with purple tint
         
         ctx.fillRect(x, y, size, size);
       }
     }
 
     function drawTitleScreen(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
-      // Background
+      // Background - black
       ctx.fillStyle = 'black';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
       // Draw stars
       drawStars(ctx, canvas);
       
-      // Title
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 40px monospace';
+      // Create an arcade-style neon effect for the title
+      // Base layer - dark outline
+      ctx.fillStyle = '#3b0764'; // dark purple
+      ctx.font = `bold 48px ${pressStart2P.style.fontFamily}`;
       ctx.textAlign = 'center';
+      ctx.fillText('SPACE INVADERS', canvas.width / 2 + 4, canvas.height / 3 + 4);
+      
+      // Middle glow layer
+      ctx.fillStyle = '#7e22ce'; // purple-700
+      ctx.fillText('SPACE INVADERS', canvas.width / 2 + 2, canvas.height / 3 + 2);
+      
+      // Main text with glow
+      const gradient = ctx.createLinearGradient(0, canvas.height / 3 - 40, 0, canvas.height / 3 + 10);
+      gradient.addColorStop(0, '#d946ef'); // pink-500
+      gradient.addColorStop(0.5, '#c026d3'); // fuchsia-600
+      gradient.addColorStop(1, '#a21caf'); // fuchsia-800
+      
+      ctx.fillStyle = gradient;
       ctx.fillText('SPACE INVADERS', canvas.width / 2, canvas.height / 3);
       
+      // Add pixelated glow effect to title
+      ctx.shadowColor = '#e879f9'; // pink-400
+      ctx.shadowBlur = 20;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+      ctx.fillText('SPACE INVADERS', canvas.width / 2, canvas.height / 3);
+      
+      // Add second glow layer for intensity
+      ctx.shadowColor = '#f0abfc'; // pink-300
+      ctx.shadowBlur = 30;
+      ctx.fillText('SPACE INVADERS', canvas.width / 2, canvas.height / 3);
+      ctx.shadowBlur = 0;
+      
+      // Create a "flicker" effect based on time
+      if (Math.sin(Date.now() * 0.003) > 0.95) {
+        // Occasionally dim the text slightly to simulate neon flicker
+        ctx.globalAlpha = 0.8;
+        ctx.fillStyle = '#c026d3'; // fuchsia-600
+        ctx.fillText('SPACE INVADERS', canvas.width / 2, canvas.height / 3);
+        ctx.globalAlpha = 1.0;
+      }
+      
       // Instructions
+      ctx.fillStyle = '#d8b4fe'; // purple-300
       ctx.font = '20px monospace';
       ctx.fillText('PRESS ENTER TO START', canvas.width / 2, canvas.height / 2);
       ctx.fillText('ARROW KEYS TO MOVE, SPACE TO SHOOT', canvas.width / 2, canvas.height / 2 + 40);
       
+      // Add click to return to library instruction
+      ctx.fillStyle = '#a78bfa'; // purple-400
+      ctx.font = '18px monospace';
+      ctx.fillText('CLICK ANYWHERE TO RETURN TO LIBRARY', canvas.width / 2, canvas.height / 2 + 120);
+      
       // Draw sample enemies
-      const enemyTypes = ['#50a0ff', '#a050ff', '#ffff00'];
+      const enemyTypes = ['#8b5cf6', '#c084fc', '#d8b4fe']; // purple tones
       const enemyLabels = ['= 10 PTS', '= 20 PTS', '= 30 PTS'];
       
       for (let i = 0; i < 3; i++) {
         drawEnemy(ctx, canvas.width / 2 - 120, canvas.height / 2 + 80 + i * 40, i);
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = '#d8b4fe'; // purple-300
         ctx.textAlign = 'left';
         ctx.fillText(enemyLabels[i], canvas.width / 2 - 70, canvas.height / 2 + 90 + i * 40);
       }
@@ -418,7 +478,7 @@ export default function SpaceInvaders() {
 
     function drawGame(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
       // Draw HUD
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = '#d8b4fe'; // purple-300
       ctx.font = 'bold 20px monospace';
       ctx.textAlign = 'left';
       ctx.fillText('1UP', 50, 30);
@@ -427,7 +487,7 @@ export default function SpaceInvaders() {
       ctx.textAlign = 'center';
       ctx.fillText('HIGH SCORE', canvas.width / 2, 30);
       
-      ctx.fillStyle = 'red';
+      ctx.fillStyle = '#f0abfc'; // pink-300
       ctx.font = 'bold 20px monospace';
       ctx.textAlign = 'left';
       ctx.fillText(score.toString().padStart(4, '0'), 50, 60);
@@ -440,7 +500,7 @@ export default function SpaceInvaders() {
       drawPlayer(ctx, player.x, player.y);
       
       // Draw player name
-      ctx.fillStyle = '#50ffff';
+      ctx.fillStyle = '#c084fc'; // purple-400
       ctx.font = 'bold 14px monospace';
       ctx.textAlign = 'center';
       ctx.fillText(player.name, player.x + player.width / 2, player.y - 10);
@@ -451,15 +511,22 @@ export default function SpaceInvaders() {
       }
       
       // Draw player bullets
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = '#a855f7'; // purple-500
       for (const bullet of bulletsRef.current) {
+        // Bullet with glow effect
+        ctx.shadowColor = '#c084fc';
+        ctx.shadowBlur = 8;
         ctx.fillRect(bullet.x, bullet.y, 4, 10);
+        ctx.shadowBlur = 0;
       }
       
       // Draw enemy bullets
-      ctx.fillStyle = '#ff5050';
+      ctx.fillStyle = '#f0abfc'; // pink-300
       for (const bullet of enemyBulletsRef.current) {
+        ctx.shadowColor = '#f0abfc';
+        ctx.shadowBlur = 8;
         ctx.fillRect(bullet.x - 2, bullet.y, 4, 12);
+        ctx.shadowBlur = 0;
       }
       
       // Draw enemies
@@ -474,7 +541,11 @@ export default function SpaceInvaders() {
     }
 
     function drawPlayer(ctx: CanvasRenderingContext2D, x: number, y: number, scale: number = 1) {
-      ctx.fillStyle = '#50ffff';
+      ctx.fillStyle = '#a855f7'; // purple-500
+      
+      // Add glow effect for player ship
+      ctx.shadowColor = '#c084fc';
+      ctx.shadowBlur = 10;
       
       // Base of ship
       ctx.beginPath();
@@ -489,13 +560,20 @@ export default function SpaceInvaders() {
       ctx.fill();
       
       // Cockpit
-      ctx.fillStyle = '#2080ff';
+      ctx.fillStyle = '#c084fc'; // purple-400
       ctx.fillRect(x + 20 * scale, y, 10 * scale, 7 * scale);
+      
+      // Reset shadow effect
+      ctx.shadowBlur = 0;
     }
 
     function drawEnemy(ctx: CanvasRenderingContext2D, x: number, y: number, type: number) {
-      const enemyTypes = ['#50a0ff', '#a050ff', '#ffff00'];
+      const enemyTypes = ['#8b5cf6', '#c084fc', '#d8b4fe']; // purple tones for enemies
       ctx.fillStyle = enemyTypes[type];
+      
+      // Add glow effect
+      ctx.shadowColor = enemyTypes[type];
+      ctx.shadowBlur = 8;
       
       // Body
       ctx.beginPath();
@@ -524,23 +602,34 @@ export default function SpaceInvaders() {
       ctx.fill();
       
       // Cockpit
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = '#f5f3ff'; // white with purple tint
       ctx.fillRect(x - 5, y - 5, 10, 5);
+      
+      // Reset shadow effect
+      ctx.shadowBlur = 0;
     }
 
     function drawGameEnd(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
       // Overlay
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillStyle = 'rgba(46, 16, 101, 0.7)'; // purple-950 with opacity
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 40px monospace';
+      // Create neon text effect
+      ctx.shadowColor = '#c084fc';
+      ctx.shadowBlur = 15;
+      
+      ctx.fillStyle = '#d8b4fe'; // purple-300
+      ctx.font = `bold 40px ${pressStart2P.style.fontFamily}`;
       ctx.textAlign = 'center';
       ctx.fillText(gameWon ? 'YOU WIN!' : 'GAME OVER', canvas.width / 2, canvas.height / 2);
       
       ctx.font = '20px monospace';
+      ctx.fillStyle = '#c084fc'; // purple-400
       ctx.fillText(`FINAL SCORE: ${score}`, canvas.width / 2, canvas.height / 2 + 50);
       ctx.fillText('PRESS ENTER TO PLAY AGAIN', canvas.width / 2, canvas.height / 2 + 100);
+      
+      // Reset shadow effect
+      ctx.shadowBlur = 0;
     }
 
     // Handle Enter key to start game
@@ -560,6 +649,7 @@ export default function SpaceInvaders() {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
       window.removeEventListener('keydown', handleStart);
+      canvas.removeEventListener('click', handleCanvasClick);
       cancelAnimationFrame(animationFrameId);
     };
   }, [gameStarted, gameOver, gameWon, highScore]);
@@ -571,14 +661,14 @@ export default function SpaceInvaders() {
           ref={canvasRef} 
           width={800} 
           height={600} 
-          className="border-4 border-gray-800 rounded-lg shadow-lg"
+          className="border-4 border-purple-500 rounded-lg shadow-lg shadow-purple-600/30"
         />
       </div>
       
       <div className="mt-6">
         <Link 
           href="/library" 
-          className="text-blue-400 hover:text-blue-300 transition-colors font-medium"
+          className="text-purple-300 hover:text-purple-200 transition-colors font-medium"
         >
           ← Back to Game Library
         </Link>

@@ -455,43 +455,35 @@ export default function StickmanGame() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 to-black arcade-bg py-8">
-      <div className="mb-6">
-        <h1 className="text-4xl font-bold text-white mb-2 arcade-text-shadow yellow-neon">Stick-Man Battle</h1>
-        {!gameStarted && !gameOver && (
-          <p className="text-yellow-300 text-center max-w-md">
-            Control your stick figure warrior and defeat your opponent in an epic duel!
-          </p>
-        )}
-      </div>
       
       <div className="relative">
         <canvas 
           ref={canvasRef} 
           width={800} 
           height={600} 
-          className="border-4 border-yellow-500/30 rounded-lg shadow-lg arcade-canvas yellow-neon-border"
+          className="border-4 border-purple-500/30 rounded-lg shadow-lg arcade-canvas purple-neon-border"
         />
         
         {!gameStarted && !gameOver && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-900/90 to-black/90">
-            <h2 className="text-5xl font-bold text-white mb-8 arcade-title-glow yellow-pulse">Stick-Man Battle</h2>
+            <h2 className="text-5xl font-bold text-white mb-8 arcade-title-glow purple-pulse">Stick-Man Battle</h2>
             <button 
               onClick={startGame}
-              className="bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-600 hover:to-yellow-400 text-black font-bold py-3 px-10 rounded-full text-xl uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(255,215,0,0.5)] hover:shadow-[0_0_25px_rgba(255,215,0,0.8)]"
+              className="bg-gradient-to-r from-purple-400 to-purple-600 hover:from-purple-600 hover:to-purple-400 text-white font-bold py-3 px-10 rounded-full text-xl uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(138,43,226,0.5)] hover:shadow-[0_0_25px_rgba(138,43,226,0.8)]"
             >
               Start Game
             </button>
             <div className="mt-12 text-gray-300">
-              <p className="text-center text-yellow-300 font-bold uppercase tracking-wider arcade-text-glow yellow-glow">Controls:</p>
+              <p className="text-center text-purple-300 font-bold uppercase tracking-wider arcade-text-glow purple-glow">Controls:</p>
               <ul className="mt-4 space-y-2 text-sm grid grid-cols-1 gap-2">
-                <li className="bg-gradient-to-r from-yellow-900/20 to-yellow-800/20 px-6 py-2 rounded border border-yellow-700/30">
-                  <span className="text-yellow-400 font-medium">Arrow keys:</span> Move left/right
+                <li className="bg-gradient-to-r from-purple-900/20 to-purple-800/20 px-6 py-2 rounded border border-purple-700/30">
+                  <span className="text-purple-400 font-medium">Arrow keys:</span> Move left/right
                 </li>
-                <li className="bg-gradient-to-r from-yellow-900/20 to-yellow-800/20 px-6 py-2 rounded border border-yellow-700/30">
-                  <span className="text-yellow-400 font-medium">Space/Up arrow:</span> Jump
+                <li className="bg-gradient-to-r from-purple-900/20 to-purple-800/20 px-6 py-2 rounded border border-purple-700/30">
+                  <span className="text-purple-400 font-medium">Space/Up arrow:</span> Jump
                 </li>
-                <li className="bg-gradient-to-r from-yellow-900/20 to-yellow-800/20 px-6 py-2 rounded border border-yellow-700/30">
-                  <span className="text-yellow-400 font-medium">Z key:</span> Attack
+                <li className="bg-gradient-to-r from-purple-900/20 to-purple-800/20 px-6 py-2 rounded border border-purple-700/30">
+                  <span className="text-purple-400 font-medium">Z key:</span> Attack
                 </li>
               </ul>
             </div>
@@ -502,7 +494,7 @@ export default function StickmanGame() {
       <div className="mt-8">
         <Link 
           href="/library" 
-          className="text-yellow-400 hover:text-yellow-300 transition-colors font-bold uppercase tracking-wider arcade-text-glow yellow-glow"
+          className="text-purple-400 hover:text-purple-300 transition-colors font-bold uppercase tracking-wider arcade-text-glow purple-glow"
         >
           ← Back to Game Library
         </Link>
@@ -543,32 +535,32 @@ export default function StickmanGame() {
             0 0 30px rgba(0,0,0,0.8);
         }
 
-        /* Yellow Neon Styles */
-        .yellow-neon {
+        /* Purple Neon Styles */
+        .purple-neon {
           text-shadow: 
             0 0 2px #fff, 
-            0 0 5px rgba(255,255,0,0.8), 
-            0 0 10px rgba(255,215,0,0.5);
+            0 0 5px rgba(138,43,226,0.8), 
+            0 0 10px rgba(138,43,226,0.5);
         }
         
-        .yellow-glow {
-          text-shadow: 0 0 2px #fff, 0 0 5px rgba(255,215,0,0.8);
+        .purple-glow {
+          text-shadow: 0 0 2px #fff, 0 0 5px rgba(138,43,226,0.8);
         }
 
-        .yellow-pulse {
+        .purple-pulse {
           text-shadow: 
             0 0 5px #fff, 
             0 0 10px #fff, 
-            0 0 15px #ffd700, 
-            0 0 20px #ffd700, 
-            0 0 25px #ffd700;
-          animation: yellowPulsate 2s infinite alternate;
+            0 0 15px #8a2be2, 
+            0 0 20px #8a2be2, 
+            0 0 25px #8a2be2;
+          animation: purplePulsate 2s infinite alternate;
         }
 
-        .yellow-neon-border {
+        .purple-neon-border {
           box-shadow: 
-            0 0 0 4px rgba(255,215,0,0.3),
-            0 0 30px rgba(255,215,0,0.2);
+            0 0 0 4px rgba(138,43,226,0.3),
+            0 0 30px rgba(138,43,226,0.2);
         }
 
         @keyframes pulsate {
@@ -576,9 +568,9 @@ export default function StickmanGame() {
           100% { opacity: 1; }
         }
 
-        @keyframes yellowPulsate {
-          0% { opacity: 0.9; text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ffd700, 0 0 20px #ffd700, 0 0 25px #ffd700; }
-          100% { opacity: 1; text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ffd700, 0 0 20px #ffd700, 0 0 30px #ffd700, 0 0 40px #ffd700; }
+        @keyframes purplePulsate {
+          0% { opacity: 0.9; text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #8a2be2, 0 0 20px #8a2be2, 0 0 25px #8a2be2; }
+          100% { opacity: 1; text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #8a2be2, 0 0 20px #8a2be2, 0 0 30px #8a2be2, 0 0 40px #8a2be2; }
         }
       `}</style>
     </div>

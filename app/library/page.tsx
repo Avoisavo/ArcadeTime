@@ -111,7 +111,15 @@ export default function Library() {
                       ? 'border-purple-500 shadow-lg bg-gradient-to-br from-purple-900/20 to-blue-900/20 arcade-selected-card' 
                       : 'border-gray-800 hover:border-purple-500/50 hover:shadow-lg hover:bg-gradient-to-br hover:from-purple-900/10 hover:to-blue-900/10'
                   }`}
-                  onClick={() => (game.title === "Stick-Man" || game.title === "Space Invaders") ? null : handleSelectGame(game)}
+                  onClick={(e) => {
+                    if (game.title === "Space Invaders") {
+                      window.location.href = "/spaceinvaders";
+                    } else if (game.title === "Stick-Man") {
+                      window.location.href = "/stickman";
+                    } else {
+                      handleSelectGame(game);
+                    }
+                  }}
                 >
                   {game.title === "Stick-Man" ? (
                     <Link href="/stickman" className="flex flex-col h-full">
@@ -221,11 +229,18 @@ export default function Library() {
                       <h3 className="text-xl font-semibold mb-3 text-white arcade-text-glow">{selectedGame.title}</h3>
                       <p className="text-gray-400 mb-4">{selectedGame.description}</p>
                       <p className="text-purple-400 mb-8">Released: {selectedGame.year}</p>
-                      <Link href={selectedGame.title === "Stick-Man" ? "/stickman" : selectedGame.title === "Space Invaders" ? "/spaceinvaders" : "#"}>
-                        <button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white px-6 py-2 rounded-md font-bold uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_10px_rgba(138,43,226,0.5)] hover:shadow-[0_0_15px_rgba(138,43,226,0.8)]">
-                          Play Now
-                        </button>
-                      </Link>
+                      <button 
+                        onClick={() => {
+                          if (selectedGame.title === "Space Invaders") {
+                            window.location.href = "/spaceinvaders";
+                          } else if (selectedGame.title === "Stick-Man") {
+                            window.location.href = "/stickman";
+                          }
+                        }}
+                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white px-6 py-2 rounded-md font-bold uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_10px_rgba(138,43,226,0.5)] hover:shadow-[0_0_15px_rgba(138,43,226,0.8)]"
+                      >
+                        Play Now
+                      </button>
                     </div>
                   </div>
                 </div>
