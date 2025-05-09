@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useWallet } from '@solana/wallet-adapter-react';
 import dynamic from 'next/dynamic';
+import Swap from './swap';
 
 // Dynamically import the WalletMultiButton with no SSR
 const WalletMultiButton = dynamic(
@@ -18,6 +19,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
   const { connected } = useWallet();
   const [mounted, setMounted] = useState(false);
+  const [swapOpen, setSwapOpen] = useState(false);
 
   // Only show the wallet button after component has mounted
   useEffect(() => {
@@ -51,12 +53,36 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-900/40 to-blue-900/40 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100"></span>
           </Link>
         ))}
+        {/* Swap Button */}
+        <button
+          onClick={() => setSwapOpen(true)}
+          className="text-sm font-medium py-2 px-6 relative group overflow-hidden transition-all duration-300 text-gray-400 hover:text-gray-200 focus:outline-none"
+        >
+          <span className="relative z-10 uppercase tracking-wider font-bold">Swap</span>
+          <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-900/40 to-blue-900/40 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100"></span>
+        </button>
       </div>
       <div className="absolute right-8">
         {mounted && (
           <WalletMultiButton className="!bg-gradient-to-r !from-purple-600 !to-blue-600 hover:!from-blue-600 hover:!to-purple-600 !text-white !py-2 !px-6 !rounded-md !text-sm !uppercase !font-bold !tracking-wider transform hover:!scale-105 transition-all duration-300 !shadow-[0_0_10px_rgba(138,43,226,0.5)] hover:!shadow-[0_0_15px_rgba(138,43,226,0.8)]" />
         )}
       </div>
+
+      {/* Swap Modal */}
+      {swapOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
+          <div className="bg-gray-900 rounded-xl shadow-2xl p-8 relative w-full max-w-md mx-auto">
+            <button
+              onClick={() => setSwapOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold focus:outline-none"
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <Swap />
+          </div>
+        </div>
+      )}
 
       <style jsx global>{`
         .arcade-header {
