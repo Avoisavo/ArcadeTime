@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
   const tabs = [
     { name: 'Games', path: '/games' },
     { name: 'Inventory', path: '/inventory' },
-    { name: 'Transactions', path: '/transactions' },
+    { name: 'Marketplace', path: '/marketplace' },
     { name: 'Shop', path: '/shop' }
   ];
 
