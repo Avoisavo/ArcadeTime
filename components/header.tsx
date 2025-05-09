@@ -2,12 +2,16 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import '@solana/wallet-adapter-react-ui/styles.css';
 
 interface HeaderProps {
   activeTab?: string;
 }
 
 const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
+  const { connected } = useWallet();
   const tabs = [
     { name: 'Games', path: '/games' },
     { name: 'Inventory', path: '/inventory' },
@@ -36,9 +40,9 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
           </Link>
         ))}
       </div>
-      <button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white py-2 px-6 rounded-md text-sm absolute right-8 uppercase font-bold tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_10px_rgba(138,43,226,0.5)] hover:shadow-[0_0_15px_rgba(138,43,226,0.8)]">
-        Login with Solana Wallet
-      </button>
+      <div className="absolute right-8">
+        <WalletMultiButton className="!bg-gradient-to-r !from-purple-600 !to-blue-600 hover:!from-blue-600 hover:!to-purple-600 !text-white !py-2 !px-6 !rounded-md !text-sm !uppercase !font-bold !tracking-wider transform hover:!scale-105 transition-all duration-300 !shadow-[0_0_10px_rgba(138,43,226,0.5)] hover:!shadow-[0_0_15px_rgba(138,43,226,0.8)]" />
+      </div>
 
       <style jsx global>{`
         .arcade-header {
