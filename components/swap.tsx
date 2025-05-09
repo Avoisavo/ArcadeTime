@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
-import { mintArcadeToken } from '@/utils/arcadeTokenMint';
 
 const SPACE_TOKEN = {
   symbol: 'SPACE',
-  name: 'Space Token',
+  name: 'Arcade Token',
 };
 const STICKMAN_TOKEN = {
   symbol: 'STICKMAN',
-  name: 'StickMan Token',
+  name: 'Arcade Token',
 };
 
 const RECIPIENT_ADDRESS = '2pdYhCdLUsXaLRPn1Ensw9b2DAs4m4jEriEpQMUgNRiN';
@@ -52,8 +51,7 @@ const Swap: React.FC = () => {
       setSwapping(true);
       setMessage('Processing transfer...');
 
-      // Execute the transfer and receive Arcade tokens
-      const signature = await mintArcadeToken(wallet.publicKey.toString());
+      // Execute the transfer and receive Space tokens
 
       setMessage(`Transfer complete! Transaction: ${signature}`);
       setAmount(''); // Clear the input after successful transfer

@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useWallet } from '@solana/wallet-adapter-react';
 import dynamic from 'next/dynamic';
 import Swap from './swap';
-import Image from 'next/image';
 
 // Dynamically import the WalletMultiButton with no SSR
 const WalletMultiButton = dynamic(
@@ -18,10 +17,9 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
-  const { connected, publicKey } = useWallet();
+  const { connected } = useWallet();
   const [mounted, setMounted] = useState(false);
   const [swapOpen, setSwapOpen] = useState(false);
-  const [arcBalance, setArcBalance] = useState(0);
 
   // Only show the wallet button after component has mounted
   useEffect(() => {
@@ -36,36 +34,6 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
 
   return (
     <header className="bg-black border-b border-purple-700/30 text-white p-4 flex justify-between items-center sticky top-0 z-50 arcade-header">
-      {/* User Section */}
-      <div className="flex items-center space-x-4">
-        {connected && publicKey ? (
-          <>
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center">
-              <span className="text-lg font-bold">
-                {publicKey.toString().slice(0, 2)}
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium">
-                {publicKey.toString().slice(0, 4)}...{publicKey.toString().slice(-4)}
-              </span>
-              <div className="flex items-center space-x-1">
-                <Image
-                  src="/logo.png"
-                  alt="ARC Token"
-                  width={16}
-                  height={16}
-                  className="rounded-full"
-                />
-                <span className="text-sm text-gray-300">{arcBalance} ARC</span>
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="text-sm text-gray-400">Not Connected</div>
-        )}
-      </div>
-
       <div className="flex space-x-12 mx-auto relative">
         {tabs.map((tab) => (
           <Link 

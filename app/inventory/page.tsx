@@ -1,105 +1,67 @@
 "use client";
 
 import React from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
 import Header from '@/components/header';
 
 const InventoryPage = () => {
-  const { connected } = useWallet();
-
-  // Mock data - replace with actual data from your backend
-  const backgrounds = [
-    { id: 1, name: 'Space', image: '/space-bg.png' },
-    { id: 2, name: 'Stickman', image: '/stick-man.png' },
-    // Add more backgrounds as needed
-  ];
-
-  const powers = [
-    { id: 1, name: 'Speed Boost', image: '/speed.png' },
-    { id: 2, name: 'Double Jump', image: '/double-jump.png' },
-    { id: 3, name: 'Shield', image: '/shield.png' },
-    // Add more powers as needed
-  ];
-
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black">
       <Header activeTab="Inventory" />
-      
       <main className="container mx-auto px-4 py-8">
-        {!connected ? (
-          <div className="text-center py-20">
-            <h2 className="text-2xl font-bold mb-4">Connect your wallet to view your inventory</h2>
-            <p className="text-gray-400">Your assets will appear here once connected</p>
-          </div>
-        ) : (
-          <div className="space-y-12">
-            {/* Backgrounds Section */}
-            <section>
-              <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-                Backgrounds
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {backgrounds.map((bg) => (
-                  <div
-                    key={bg.id}
-                    className="bg-gray-900 rounded-xl p-4 hover:bg-gray-800 transition-all duration-300 transform hover:scale-105"
-                  >
-                    <div className="aspect-square relative rounded-lg overflow-hidden mb-3">
-                      <img
-                        src={bg.image}
-                        alt={bg.name}
-                        className="object-cover w-full h-full"
-                      />
-                    </div>
-                    <h3 className="text-lg font-semibold text-center">{bg.name}</h3>
-                  </div>
-                ))}
+        <h1 className="text-4xl font-bold text-white mb-8 text-center arcade-glow uppercase tracking-widest" style={{fontFamily: 'Press Start 2P, monospace'}}>
+          Inventory
+        </h1>
+        
+        {/* Token Assets Section */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-white mb-6 arcade-glow">Token Assets</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow">
+              <div className="flex justify-between items-center">
+                <span className="text-purple-300">SPACE Token</span>
+                <span className="text-white font-mono">0</span>
               </div>
-            </section>
+            </div>
+            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow">
+              <div className="flex justify-between items-center">
+                <span className="text-purple-300">STICKMAN Token</span>
+                <span className="text-white font-mono">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-            {/* Powers Section */}
-            <section>
-              <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-                Powers
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {powers.map((power) => (
-                  <div
-                    key={power.id}
-                    className="bg-gray-900 rounded-xl p-4 hover:bg-gray-800 transition-all duration-300 transform hover:scale-105"
-                  >
-                    <div className="aspect-square relative rounded-lg overflow-hidden mb-3">
-                      <img
-                        src={power.image}
-                        alt={power.name}
-                        className="object-cover w-full h-full"
-                      />
-                    </div>
-                    <h3 className="text-lg font-semibold text-center">{power.name}</h3>
-                  </div>
-                ))}
+        {/* Power Assets Section */}
+        <div>
+          <h2 className="text-2xl font-bold text-white mb-6 arcade-glow">Power</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow">
+              <div className="flex flex-col items-center">
+                <span className="text-purple-300 mb-2">Power Item 1</span>
+                <span className="text-white font-mono">0</span>
               </div>
-            </section>
+            </div>
+            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow">
+              <div className="flex flex-col items-center">
+                <span className="text-purple-300 mb-2">Power Item 2</span>
+                <span className="text-white font-mono">0</span>
+              </div>
+            </div>
+            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow">
+              <div className="flex flex-col items-center">
+                <span className="text-purple-300 mb-2">Power Item 3</span>
+                <span className="text-white font-mono">0</span>
+              </div>
+            </div>
           </div>
-        )}
+        </div>
       </main>
-
       <style jsx global>{`
-        .bg-gradient-to-r {
-          background-size: 200% 200%;
-          animation: gradient 5s ease infinite;
+        .arcade-glow {
+          text-shadow: 0 0 2px #fff, 0 0 4px #a78bfa, 0 0 6px #6366f1;
         }
-
-        @keyframes gradient {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
+        .arcade-border-glow {
+          box-shadow: 0 0 8px 2px #a78bfa99, 0 0 2px #6366f1;
         }
       `}</style>
     </div>

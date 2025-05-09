@@ -1,5 +1,6 @@
 import { Connection, clusterApiUrl, Keypair, PublicKey, Commitment, ConnectionConfig } from '@solana/web3.js';
-import { ArcadeToken } from '../contracts/ArcadeToken';
+import { SpaceToken } from '../contracts/SpaceToken';
+// token minted succesfully
 
 // Initialize connection to Solana network with custom configuration
 const connectionConfig: ConnectionConfig = {
@@ -17,7 +18,7 @@ const connection = new Connection(
 );
 
 // Store the mint authority keypair in localStorage
-const MINT_AUTHORITY_KEY = 'arcade_token_mint_authority';
+const MINT_AUTHORITY_KEY = 'space_token_mint_authority';
 
 function getMintAuthority(): Keypair {
   try {
@@ -42,9 +43,9 @@ function getMintAuthority(): Keypair {
   return newKeypair;
 }
 
-// Initialize the Arcade token with persistent mint authority
+// Initialize the Space token with persistent mint authority
 const mintAuthority = getMintAuthority();
-const arcadeToken = new ArcadeToken(connection, mintAuthority);
+const spaceToken = new SpaceToken(connection, mintAuthority);
 
 // Store the mint address
 let mintAddress: PublicKey | null = null;
@@ -85,13 +86,13 @@ async function retryWithBackoff<T>(
   }
 }
 
-export async function initializeArcadeToken() {
+export async function initializeSpaceToken() {
   try {
     if (!mintAddress) {
-      console.log('Initializing Arcade token...');
+      console.log('Initializing Space token...');
       // Try to create token with retry mechanism
-      mintAddress = await retryWithBackoff(() => arcadeToken.createToken());
-      console.log('Arcade token created with address:', mintAddress.toBase58());
+      mintAddress = await retryWithBackoff(() => spaceToken.createToken());
+      console.log('Space token created with address:', mintAddress.toBase58());
     }
     return mintAddress;
   } catch (error: any) {
@@ -99,28 +100,28 @@ export async function initializeArcadeToken() {
     if (error?.message?.includes('429') || 
         error?.message?.includes('Too Many Requests') ||
         error?.message?.includes('rate limit')) {
-      console.log('Rate limited, assuming Arcade token already exists...');
+      console.log('Rate limited, assuming Space token already exists...');
       // Return a default mint address or handle this case appropriately
       return new PublicKey('EYn3Xp9ut4wLyvPSCFgnri7NzK5PHtoJAN2W2sippuoL');
     }
-    console.error('Error creating Arcade token:', error);
+    console.error('Error creating Space token:', error);
     throw error;
   }
 }
 
-export async function mintArcadeToken(userWallet: string) {
+export async function mintSpaceToken(userWallet: string) {
   try {
     // Ensure token is initialized
     if (!mintAddress) {
-      console.log('Arcade token not initialized, initializing now...');
-      mintAddress = await initializeArcadeToken();
+      console.log('Space token not initialized, initializing now...');
+      mintAddress = await initializeSpaceToken();
     }
     
-    console.log('Minting Arcade token to wallet:', userWallet);
+    console.log('Minting Space token to wallet:', userWallet);
     const signature = await retryWithBackoff(() => 
-      arcadeToken.mintTokenToUser(new PublicKey(userWallet))
+      spaceToken.mintTokenToUser(new PublicKey(userWallet))
     );
-    console.log('Arcade token minted successfully. Transaction signature:', signature);
+    console.log('Space token minted successfully. Transaction signature:', signature);
     return signature;
   } catch (error: any) {
     // Handle rate limit errors specifically
@@ -129,7 +130,7 @@ export async function mintArcadeToken(userWallet: string) {
         error?.message?.includes('rate limit')) {
       throw new Error('Rate limit reached. Please try again in a few minutes.');
     }
-    console.error('Error minting Arcade token:', error);
+    console.error('Error minting Space token:', error);
     throw error;
   }
 } 

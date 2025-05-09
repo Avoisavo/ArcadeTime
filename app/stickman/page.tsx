@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { mintArcadeToken, initializeArcadeToken } from '@/utils/arcadeTokenMint';
+import { mintStickManToken, initializeToken } from '@/utils/tokenMint';
 
 export default function StickmanGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -59,7 +59,7 @@ export default function StickmanGame() {
   useEffect(() => {
     const initToken = async () => {
       try {
-        await initializeArcadeToken();
+        await initializeToken();
       } catch (error) {
         console.error('Error initializing token:', error);
         setMintStatus('Error initializing token system. Please try again later.');
@@ -116,8 +116,8 @@ export default function StickmanGame() {
 
     try {
       setIsMinting(true);
-      setMintStatus('Minting your Arcade token...');
-      const signature = await mintArcadeToken(publicKey.toBase58());
+      setMintStatus('Minting your Stick-Man token...');
+      const signature = await mintStickManToken(publicKey.toBase58());
       setMintStatus(`Token minted successfully! Transaction: ${signature}`);
     } catch (error) {
       console.error('Error minting token:', error);
@@ -178,7 +178,7 @@ export default function StickmanGame() {
 
     // Load background image
     const backgroundImage = new Image();
-    backgroundImage.src = '/arcade/stick-man.png';
+    backgroundImage.src = '/arcade/stickmanbg.png';
     
     let backgroundLoaded = false;
     backgroundImage.onload = () => {
