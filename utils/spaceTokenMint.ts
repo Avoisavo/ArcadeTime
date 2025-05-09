@@ -1,5 +1,6 @@
 import { Connection, clusterApiUrl, Keypair, PublicKey, Commitment, ConnectionConfig } from '@solana/web3.js';
 import { SpaceToken } from '../contracts/SpaceToken';
+// token minted succesfully
 
 // Initialize connection to Solana network with custom configuration
 const connectionConfig: ConnectionConfig = {

@@ -1,6 +1,6 @@
 import { Connection, clusterApiUrl, Keypair, PublicKey, Commitment } from '@solana/web3.js';
 import { StickManToken } from '../contracts/StickManToken';
-
+// token minted succesfully
 // Initialize connection to Solana network (using devnet for development)
 const connection = new Connection(clusterApiUrl('devnet'), 'confirmed' as Commitment);
 
