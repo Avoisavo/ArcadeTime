@@ -703,7 +703,14 @@ export default function SpaceInvaders() {
       ctx.font = '20px monospace';
       ctx.fillStyle = '#c084fc'; // purple-400
       ctx.fillText(`FINAL SCORE: ${score}`, canvas.width / 2, canvas.height / 2 + 50);
-      ctx.fillText('PRESS ENTER TO PLAY AGAIN', canvas.width / 2, canvas.height / 2 + 100);
+      
+      // Add token award status
+      if (gameWon) {
+        ctx.fillStyle = tokenMinted ? '#a78bfa' : '#f0abfc'; // purple-400 if minted, pink-300 if not
+        ctx.fillText(tokenMinted ? 'TOKEN AWARDED: 1' : 'MINTING TOKEN', canvas.width / 2, canvas.height / 2 + 80);
+      }
+      
+      ctx.fillText('PRESS ENTER TO PLAY AGAIN', canvas.width / 2, canvas.height / 2 + 120);
       
       // Reset shadow effect
       ctx.shadowBlur = 0;

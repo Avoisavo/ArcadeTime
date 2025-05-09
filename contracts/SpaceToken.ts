@@ -32,17 +32,17 @@ export class SpaceToken {
       const balance = await this.connection.getBalance(this.mintAuthority.publicKey);
       if (balance < LAMPORTS_PER_SOL) {
         try {
-          // Request airdrop of 2 SOL (for devnet)
+          // Request airdrop of 1 SOL (for testnet)
           const signature = await this.connection.requestAirdrop(
             this.mintAuthority.publicKey,
-            2 * LAMPORTS_PER_SOL
+            LAMPORTS_PER_SOL
           );
           await this.connection.confirmTransaction(signature);
-          console.log('Mint authority funded with 2 SOL');
+          console.log('Mint authority funded with 1 SOL');
         } catch (error: any) {
           if (error?.message?.includes('429')) {
             throw new Error(
-              'Devnet airdrop limit reached. Please visit https://faucet.solana.com to get test SOL manually.'
+              'Testnet airdrop limit reached. Please visit https://faucet.solana.com to get test SOL manually.'
             );
           }
           throw error;

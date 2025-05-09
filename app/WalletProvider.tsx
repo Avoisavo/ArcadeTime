@@ -13,7 +13,10 @@ interface Props {
 
 export const WalletProvider: FC<Props> = ({ children }) => {
   // You can also provide a custom RPC endpoint
-  const endpoint = useMemo(() => clusterApiUrl('devnet'), []);
+  const endpoint = useMemo(() => {
+    // Use environment variable if available, otherwise fallback to public endpoint
+    return process.env.NEXT_PUBLIC_SOLANA_RPC_URL || clusterApiUrl('devnet');
+  }, []);
 
   // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking and lazy loading
   const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
