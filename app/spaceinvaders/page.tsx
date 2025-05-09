@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Press_Start_2P } from 'next/font/google';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { mintSpaceToken } from '@/utils/spaceTokenMint';
+import { mintArcadeToken } from '@/utils/arcadeTokenMint';
 
 const pressStart2P = Press_Start_2P({
   weight: '400',
@@ -140,11 +140,11 @@ export default function SpaceInvaders() {
       // Mint token if wallet is connected and token hasn't been minted yet
       if (publicKey && !tokenMinted) {
         try {
-          const signature = await mintSpaceToken(publicKey.toString());
-          console.log('Space token minted successfully:', signature);
+          const signature = await mintArcadeToken(publicKey.toString());
+          console.log('Arcade token minted successfully:', signature);
           setTokenMinted(true);
         } catch (error: any) {
-          console.error('Error minting Space token:', error);
+          console.error('Error minting Arcade token:', error);
           // Show error message in the game over screen
           let errorMessage = 'Error minting token. Please try again later.';
           

@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey } from '@solana/web3.js';
+import { mintArcadeToken } from '@/utils/arcadeTokenMint';
 
 const SPACE_TOKEN = {
   symbol: 'SPACE',
@@ -9,28 +12,73 @@ const STICKMAN_TOKEN = {
   name: 'StickMan Token',
 };
 
+const RECIPIENT_ADDRESS = '2pdYhCdLUsXaLRPn1Ensw9b2DAs4m4jEriEpQMUgNRiN';
+
 const Swap: React.FC = () => {
-  const [fromToken] = useState(SPACE_TOKEN);
-  const [toToken] = useState(STICKMAN_TOKEN);
+  const wallet = useWallet();
+  const [fromToken] = useState(STICKMAN_TOKEN);
+  const [toToken] = useState(SPACE_TOKEN);
   const [amount, setAmount] = useState('');
   const [swapping, setSwapping] = useState(false);
   const [message, setMessage] = useState('');
+  const [spaceTokenMint, setSpaceTokenMint] = useState<PublicKey | null>(null);
+  const [stickmanTokenMint, setStickmanTokenMint] = useState<PublicKey | null>(null);
+
+  useEffect(() => {
+    const initializeTokens = async () => {
+      try {
+
+      } catch (error) {
+        console.error('Error initializing tokens:', error);
+        setMessage('Error initializing tokens. Please try again.');
+      }
+    };
+
+    initializeTokens();
+  }, []);
 
   const handleSwap = async () => {
-    setSwapping(true);
-    setMessage('Swapping... (not implemented)');
-    setTimeout(() => {
+    if (!wallet.publicKey || !spaceTokenMint || !stickmanTokenMint) {
+      setMessage('Please connect your wallet and ensure tokens are initialized.');
+      return;
+    }
+
+    if (!amount || Number(amount) <= 0) {
+      setMessage('Please enter a valid amount.');
+      return;
+    }
+
+    try {
+      setSwapping(true);
+      setMessage('Processing transfer...');
+
+      // Execute the transfer and receive Arcade tokens
+      const signature = await mintArcadeToken(wallet.publicKey.toString());
+
+      setMessage(`Transfer complete! Transaction: ${signature}`);
+      setAmount(''); // Clear the input after successful transfer
+    } catch (error: any) {
+      console.error('Error during transfer:', error);
+      let errorMessage = 'Error during transfer. Please try again.';
+      
+      if (error?.message?.includes('429') || 
+          error?.message?.includes('Too Many Requests') ||
+          error?.message?.includes('rate limit')) {
+        errorMessage = 'Rate limit reached. Please try again in a few minutes.';
+      }
+      
+      setMessage(errorMessage);
+    } finally {
       setSwapping(false);
-      setMessage('Swap complete! (UI only)');
-    }, 1200);
+    }
   };
 
   return (
     <div className="flex flex-col items-center w-full">
-      <h2 className="text-3xl font-extrabold mb-6 text-white text-center arcade-glow uppercase tracking-widest" style={{fontFamily: 'Press Start 2P, monospace'}}>Arcade Swap</h2>
+      <h2 className="text-3xl font-extrabold mb-6 text-white text-center arcade-glow uppercase tracking-widest" style={{fontFamily: 'Press Start 2P, monospace'}}>Token Transfer</h2>
       <div className="w-full bg-gradient-to-br from-gray-900 via-black to-gray-950 rounded-2xl p-8 shadow-2xl border-2 border-purple-500 arcade-border-glow relative" style={{maxWidth: 400, minWidth: 320}}>
         <div className="mb-6">
-          <label className="block text-purple-300 text-xs mb-2 tracking-widest uppercase arcade-glow">From</label>
+          <label className="block text-purple-300 text-xs mb-2 tracking-widest uppercase arcade-glow">Transfer</label>
           <div className="flex items-center bg-gray-900 rounded px-4 py-3 border border-purple-700/40 arcade-inner-glow">
             <span className="font-extrabold text-purple-400 mr-2 text-lg arcade-glow">{fromToken.symbol}</span>
             <span className="text-gray-200 text-xs">{fromToken.name}</span>
@@ -41,6 +89,7 @@ const Swap: React.FC = () => {
           <input
             type="number"
             min="0"
+            step="0.1"
             value={amount}
             onChange={e => setAmount(e.target.value)}
             className="w-full px-4 py-3 rounded-lg bg-black text-white border-2 border-purple-700/40 focus:outline-none focus:ring-2 focus:ring-purple-500 arcade-inner-glow text-xl font-mono text-center transition-all duration-300 placeholder-gray-500"
@@ -50,22 +99,28 @@ const Swap: React.FC = () => {
           />
         </div>
         <div className="mb-6">
-          <label className="block text-blue-300 text-xs mb-2 tracking-widest uppercase arcade-glow">To</label>
+          <label className="block text-blue-300 text-xs mb-2 tracking-widest uppercase arcade-glow">Receive</label>
           <div className="flex items-center bg-gray-900 rounded px-4 py-3 border border-blue-700/40 arcade-inner-glow">
             <span className="font-extrabold text-blue-400 mr-2 text-lg arcade-glow">{toToken.symbol}</span>
             <span className="text-gray-200 text-xs">{toToken.name}</span>
           </div>
+          <div className="mt-2 text-sm text-purple-300 arcade-glow">
+            You will receive {amount || '0'} {toToken.symbol}
+          </div>
         </div>
         <button
           onClick={handleSwap}
-          disabled={swapping || !amount || Number(amount) <= 0}
+          disabled={swapping || !amount || Number(amount) <= 0 || !wallet.publicKey}
           className="w-full py-4 mt-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white font-extrabold text-xl shadow-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 arcade-glow tracking-widest uppercase disabled:opacity-50 disabled:cursor-not-allowed"
           style={{fontFamily: 'Press Start 2P, monospace'}}
         >
-          {swapping ? 'Swapping...' : 'Swap'}
+          {swapping ? 'Processing...' : 'Transfer'}
         </button>
-        {message && <div className="mt-6 text-center text-purple-300 arcade-glow text-lg" style={{fontFamily: 'Press Start 2P, monospace'}}>{message}</div>}
-        {/* Subtle neon border effect */}
+        {message && (
+          <div className="mt-6 text-center text-purple-300 arcade-glow text-lg" style={{fontFamily: 'Press Start 2P, monospace'}}>
+            {message}
+          </div>
+        )}
         <div className="absolute -inset-0.5 rounded-2xl pointer-events-none arcade-animated-border"></div>
       </div>
       <style jsx global>{`

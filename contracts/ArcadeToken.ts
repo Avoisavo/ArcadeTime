@@ -17,7 +17,7 @@ import {
   createInitializeMintInstruction,
 } from '@solana/spl-token';
 
-export class SpaceToken {
+export class ArcadeToken {
   private connection: Connection;
   private mint: PublicKey | null = null;
   private mintAuthority: Keypair;
