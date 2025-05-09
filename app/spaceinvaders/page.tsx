@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Press_Start_2P } from 'next/font/google';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { mintSpaceToken } from '@/utils/spaceTokenMint';
 
 const pressStart2P = Press_Start_2P({
   weight: '400',
@@ -11,12 +13,14 @@ const pressStart2P = Press_Start_2P({
 });
 
 export default function SpaceInvaders() {
+  const { publicKey } = useWallet();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(2010);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [gameWon, setGameWon] = useState(false);
+  const [tokenMinted, setTokenMinted] = useState(false);
 
   // Constants
   const ENEMY_ROWS = 3;
@@ -122,6 +126,76 @@ export default function SpaceInvaders() {
       dropAmount: 20,
       moveCounter: 0,
     };
+  };
+
+  const checkWinCondition = async () => {
+    // Check if all enemies are destroyed
+    const allEnemiesDestroyed = enemiesRef.current.every(row => 
+      row.every(enemy => !enemy.alive)
+    );
+
+    if (allEnemiesDestroyed && !gameWon) {
+      setGameWon(true);
+      
+      // Mint token if wallet is connected and token hasn't been minted yet
+      if (publicKey && !tokenMinted) {
+        try {
+          const signature = await mintSpaceToken(publicKey.toString());
+          console.log('Space token minted successfully:', signature);
+          setTokenMinted(true);
+        } catch (error: any) {
+          console.error('Error minting Space token:', error);
+          // Show error message in the game over screen
+          let errorMessage = 'Error minting token. Please try again later.';
+          
+          if (error?.message?.includes('429')) {
+            errorMessage = 'Devnet airdrop limit reached. Please visit https://faucet.solana.com to get test SOL manually.';
+          } else if (error?.message?.includes('insufficient funds')) {
+            errorMessage = 'Mint authority needs funding. Please contact the game administrator.';
+          }
+          
+          // Update the game over screen to show the error
+          const canvas = canvasRef.current;
+          if (canvas) {
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.fillStyle = 'rgba(46, 16, 101, 0.7)';
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              
+              ctx.fillStyle = '#d8b4fe';
+              ctx.font = `bold 40px ${pressStart2P.style.fontFamily}`;
+              ctx.textAlign = 'center';
+              ctx.fillText('YOU WIN!', canvas.width / 2, canvas.height / 2 - 50);
+              
+              ctx.font = '20px monospace';
+              ctx.fillStyle = '#c084fc';
+              ctx.fillText(`FINAL SCORE: ${score}`, canvas.width / 2, canvas.height / 2);
+              ctx.fillText('PRESS ENTER TO PLAY AGAIN', canvas.width / 2, canvas.height / 2 + 50);
+              
+              // Show error message
+              ctx.fillStyle = '#f0abfc';
+              ctx.font = '16px monospace';
+              // Split long error message into multiple lines
+              const words = errorMessage.split(' ');
+              let line = '';
+              let y = canvas.height / 2 + 100;
+              for (const word of words) {
+                const testLine = line + word + ' ';
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > canvas.width - 100) {
+                  ctx.fillText(line, canvas.width / 2, y);
+                  line = word + ' ';
+                  y += 25;
+                } else {
+                  line = testLine;
+                }
+              }
+              ctx.fillText(line, canvas.width / 2, y);
+            }
+          }
+        }
+      }
+    }
   };
 
   useEffect(() => {
@@ -375,6 +449,9 @@ export default function SpaceInvaders() {
           enemyMovement.speed = Math.min(enemyMovement.speed + 0.05, 2);
         }
       }
+      
+      // Check win condition after updating game state
+      checkWinCondition();
       
       // Draw
       drawGame(ctx, canvas);
@@ -652,7 +729,7 @@ export default function SpaceInvaders() {
       canvas.removeEventListener('click', handleCanvasClick);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [gameStarted, gameOver, gameWon, highScore]);
+  }, [gameStarted, gameOver, gameWon, highScore, publicKey, tokenMinted]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black py-8">

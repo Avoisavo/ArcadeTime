@@ -2,12 +2,17 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { mintStickManToken, initializeToken } from '@/utils/tokenMint';
 
 export default function StickmanGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [score, setScore] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [isMinting, setIsMinting] = useState(false);
+  const [mintStatus, setMintStatus] = useState<string>('');
+  const { publicKey, connected } = useWallet();
 
   // Game state references to access in animation frame
   const playerRef = useRef({
@@ -50,6 +55,20 @@ export default function StickmanGame() {
     attack: false,
   });
 
+  // Initialize token when component mounts
+  useEffect(() => {
+    const initToken = async () => {
+      try {
+        await initializeToken();
+      } catch (error) {
+        console.error('Error initializing token:', error);
+        setMintStatus('Error initializing token system. Please try again later.');
+      }
+    };
+
+    initToken();
+  }, []);
+
   const startGame = () => {
     setGameStarted(true);
     setGameOver(false);
@@ -87,6 +106,25 @@ export default function StickmanGame() {
       animation: 0,
       label: "ENEMIES",
     };
+  };
+
+  const handleWin = async () => {
+    if (!connected || !publicKey) {
+      setMintStatus('Please connect your wallet to receive the token');
+      return;
+    }
+
+    try {
+      setIsMinting(true);
+      setMintStatus('Minting your Stick-Man token...');
+      const signature = await mintStickManToken(publicKey.toBase58());
+      setMintStatus(`Token minted successfully! Transaction: ${signature}`);
+    } catch (error) {
+      console.error('Error minting token:', error);
+      setMintStatus('Error minting token. Please try again.');
+    } finally {
+      setIsMinting(false);
+    }
   };
 
   useEffect(() => {
@@ -351,6 +389,12 @@ export default function StickmanGame() {
         );
       }
 
+      // Check for win condition
+      if (enemy.health <= 0 && !gameOver) {
+        setGameOver(true);
+        handleWin();
+      }
+
       animationFrameId = requestAnimationFrame(render);
     };
 
@@ -499,6 +543,25 @@ export default function StickmanGame() {
           ← Back to Game Library
         </Link>
       </div>
+
+      {gameOver && (
+        <div className="mt-4 text-center">
+          <h2 className="text-2xl font-bold text-white mb-2">Game Over!</h2>
+          <p className="text-white mb-4">Score: {score}</p>
+          {mintStatus && (
+            <p className={`text-sm ${mintStatus.includes('Error') ? 'text-red-400' : 'text-green-400'} mb-4`}>
+              {mintStatus}
+            </p>
+          )}
+          <button
+            onClick={startGame}
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white px-6 py-2 rounded-md font-bold uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_10px_rgba(138,43,226,0.5)] hover:shadow-[0_0_15px_rgba(138,43,226,0.8)]"
+            disabled={isMinting}
+          >
+            {isMinting ? 'Minting...' : 'Play Again'}
+          </button>
+        </div>
+      )}
 
       <style jsx global>{`
         .arcade-bg {
