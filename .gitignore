@@ -40,3 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env
+
+# wallet files
+wallet-keypair.json
+/Users/zwavo/Downloads/wallet-keypair.json
