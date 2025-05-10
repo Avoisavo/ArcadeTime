@@ -1,32 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { executeSwap } from '@/utils/tokenSwap';
 
-const SPACE_TOKEN = {
-  symbol: 'SPACE',
-  name: 'Arcade Token',
-};
 const STICKMAN_TOKEN = {
   symbol: 'STICKMAN',
-  name: 'Arcade Token',
+  name: 'Stickman Token',
+  decimals: 9,
 };
 
-const RECIPIENT_ADDRESS = '2pdYhCdLUsXaLRPn1Ensw9b2DAs4m4jEriEpQMUgNRiN';
+const SOL_TOKEN = {
+  symbol: 'SOL',
+  name: 'Solana',
+  decimals: 9,
+};
 
 const Swap: React.FC = () => {
   const wallet = useWallet();
   const [fromToken] = useState(STICKMAN_TOKEN);
-  const [toToken] = useState(SPACE_TOKEN);
+  const [toToken] = useState(SOL_TOKEN);
   const [amount, setAmount] = useState('');
   const [swapping, setSwapping] = useState(false);
   const [message, setMessage] = useState('');
-  const [spaceTokenMint, setSpaceTokenMint] = useState<PublicKey | null>(null);
   const [stickmanTokenMint, setStickmanTokenMint] = useState<PublicKey | null>(null);
+  const [solPrice, setSolPrice] = useState<number>(0);
 
   useEffect(() => {
     const initializeTokens = async () => {
       try {
-
+        // Initialize STICKMAN token mint address
+        // You should replace this with your actual STICKMAN token mint address
+        setStickmanTokenMint(new PublicKey('YOUR_STICKMAN_TOKEN_MINT_ADDRESS'));
+        
+        // Fetch current SOL price (you might want to use a price API)
+        // This is a placeholder - implement actual price fetching
+        setSolPrice(100); // Example: 1 STICKMAN = 100 SOL
       } catch (error) {
         console.error('Error initializing tokens:', error);
         setMessage('Error initializing tokens. Please try again.');
@@ -37,7 +45,7 @@ const Swap: React.FC = () => {
   }, []);
 
   const handleSwap = async () => {
-    if (!wallet.publicKey || !spaceTokenMint || !stickmanTokenMint) {
+    if (!wallet.publicKey || !stickmanTokenMint) {
       setMessage('Please connect your wallet and ensure tokens are initialized.');
       return;
     }
@@ -49,15 +57,26 @@ const Swap: React.FC = () => {
 
     try {
       setSwapping(true);
-      setMessage('Processing transfer...');
+      setMessage('Processing swap...');
 
-      // Execute the transfer and receive Space tokens
+      // Calculate SOL amount based on the price
+      const solAmount = Number(amount) * solPrice;
 
-      setMessage(`Transfer complete! Transaction: ${signature}`);
-      setAmount(''); // Clear the input after successful transfer
+      // Execute the swap
+      const signature = await executeSwap(
+        wallet.publicKey.toString(),
+        stickmanTokenMint,
+        null, // No destination token mint needed for SOL
+        Number(amount),
+        solAmount,
+        wallet
+      );
+
+      setMessage(`Swap complete! Transaction: ${signature}`);
+      setAmount(''); // Clear the input after successful swap
     } catch (error: any) {
-      console.error('Error during transfer:', error);
-      let errorMessage = 'Error during transfer. Please try again.';
+      console.error('Error during swap:', error);
+      let errorMessage = 'Error during swap. Please try again.';
       
       if (error?.message?.includes('429') || 
           error?.message?.includes('Too Many Requests') ||
@@ -73,10 +92,10 @@ const Swap: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center w-full">
-      <h2 className="text-3xl font-extrabold mb-6 text-white text-center arcade-glow uppercase tracking-widest" style={{fontFamily: 'Press Start 2P, monospace'}}>Token Transfer</h2>
+      <h2 className="text-3xl font-extrabold mb-6 text-white text-center arcade-glow uppercase tracking-widest" style={{fontFamily: 'Press Start 2P, monospace'}}>Token Swap</h2>
       <div className="w-full bg-gradient-to-br from-gray-900 via-black to-gray-950 rounded-2xl p-8 shadow-2xl border-2 border-purple-500 arcade-border-glow relative" style={{maxWidth: 400, minWidth: 320}}>
         <div className="mb-6">
-          <label className="block text-purple-300 text-xs mb-2 tracking-widest uppercase arcade-glow">Transfer</label>
+          <label className="block text-purple-300 text-xs mb-2 tracking-widest uppercase arcade-glow">From</label>
           <div className="flex items-center bg-gray-900 rounded px-4 py-3 border border-purple-700/40 arcade-inner-glow">
             <span className="font-extrabold text-purple-400 mr-2 text-lg arcade-glow">{fromToken.symbol}</span>
             <span className="text-gray-200 text-xs">{fromToken.name}</span>
@@ -97,13 +116,13 @@ const Swap: React.FC = () => {
           />
         </div>
         <div className="mb-6">
-          <label className="block text-blue-300 text-xs mb-2 tracking-widest uppercase arcade-glow">Receive</label>
+          <label className="block text-blue-300 text-xs mb-2 tracking-widest uppercase arcade-glow">To</label>
           <div className="flex items-center bg-gray-900 rounded px-4 py-3 border border-blue-700/40 arcade-inner-glow">
             <span className="font-extrabold text-blue-400 mr-2 text-lg arcade-glow">{toToken.symbol}</span>
             <span className="text-gray-200 text-xs">{toToken.name}</span>
           </div>
           <div className="mt-2 text-sm text-purple-300 arcade-glow">
-            You will receive {amount || '0'} {toToken.symbol}
+            You will receive {amount ? (Number(amount) * solPrice).toFixed(9) : '0'} {toToken.symbol}
           </div>
         </div>
         <button
@@ -112,7 +131,7 @@ const Swap: React.FC = () => {
           className="w-full py-4 mt-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white font-extrabold text-xl shadow-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 arcade-glow tracking-widest uppercase disabled:opacity-50 disabled:cursor-not-allowed"
           style={{fontFamily: 'Press Start 2P, monospace'}}
         >
-          {swapping ? 'Processing...' : 'Transfer'}
+          {swapping ? 'Processing...' : 'Swap'}
         </button>
         {message && (
           <div className="mt-6 text-center text-purple-300 arcade-glow text-lg" style={{fontFamily: 'Press Start 2P, monospace'}}>

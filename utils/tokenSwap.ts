@@ -1,69 +1,60 @@
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { getOrCreateAssociatedTokenAccount, createTransferInstruction } from '@solana/spl-token';
-import { mintSpaceToken } from './spaceTokenMint';
+import { Connection, PublicKey, Transaction, SystemProgram, sendAndConfirmTransaction } from '@solana/web3.js';
+import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, createTransferInstruction } from '@solana/spl-token';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 
-const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
-
 export async function executeSwap(
-  userWallet: string,
+  walletAddress: string,
   fromTokenMint: PublicKey,
-  toTokenMint: PublicKey,
+  toTokenMint: PublicKey | null, // null for SOL
   amount: number,
-  recipientAddress: string,
+  solAmount: number,
   wallet: WalletContextState
 ): Promise<string> {
-  try {
-    if (!wallet.publicKey || !wallet.signTransaction) {
-      throw new Error('Wallet not connected or missing required functionality');
-    }
-
-    const userPublicKey = new PublicKey(userWallet);
-    const recipientPublicKey = new PublicKey(recipientAddress);
-
-    // Create token accounts
-    const userFromTokenAccount = await getOrCreateAssociatedTokenAccount(
-      connection,
-      wallet as any, // Type assertion to bypass signer requirement
-      fromTokenMint,
-      userPublicKey,
-      true,
-      'confirmed',
-      { commitment: 'confirmed' }
-    );
-
-    const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
-      connection,
-      wallet as any, // Type assertion to bypass signer requirement
-      fromTokenMint,
-      recipientPublicKey,
-      true,
-      'confirmed',
-      { commitment: 'confirmed' }
-    );
-
-    // Create transfer instruction
-    const transferInstruction = createTransferInstruction(
-      userFromTokenAccount.address,
-      recipientTokenAccount.address,
-      wallet.publicKey,
-      amount
-    );
-
-    // Create and send transaction
-    const transaction = new Transaction().add(transferInstruction);
-    const signedTransaction = await wallet.signTransaction(transaction);
-    const transferSignature = await connection.sendRawTransaction(signedTransaction.serialize());
-
-    // Wait for confirmation
-    await connection.confirmTransaction(transferSignature);
-
-    // Mint Space tokens to user
-    const mintSignature = await mintSpaceToken(userWallet);
-
-    return `${transferSignature},${mintSignature}`;
-  } catch (error) {
-    console.error('Error executing swap:', error);
-    throw error;
+  if (!wallet.publicKey || !wallet.signTransaction) {
+    throw new Error('Wallet not connected');
   }
+
+  const connection = new Connection(process.env.HELIUS_RPC_URL || 'https://api.devnet.solana.com');
+  
+  // Get the user's token account
+  const fromTokenAccount = await getAssociatedTokenAddress(
+    fromTokenMint,
+    wallet.publicKey
+  );
+
+  // Create transaction
+  const transaction = new Transaction();
+
+  // Add transfer instruction for STICKMAN tokens
+  transaction.add(
+    createTransferInstruction(
+      fromTokenAccount,
+      new PublicKey('YOUR_PROGRAM_ADDRESS'), // Replace with your program's address that will handle the swap
+      wallet.publicKey,
+      amount * Math.pow(10, 9) // Convert to lamports (assuming 9 decimals)
+    )
+  );
+
+  // Add SOL transfer instruction
+  transaction.add(
+    SystemProgram.transfer({
+      fromPubkey: new PublicKey('YOUR_PROGRAM_ADDRESS'), // Replace with your program's address
+      toPubkey: wallet.publicKey,
+      lamports: solAmount * Math.pow(10, 9) // Convert SOL to lamports
+    })
+  );
+
+  // Get recent blockhash
+  const { blockhash } = await connection.getLatestBlockhash();
+  transaction.recentBlockhash = blockhash;
+  transaction.feePayer = wallet.publicKey;
+
+  // Sign and send transaction
+  const signed = await wallet.signTransaction(transaction);
+  const signature = await connection.sendRawTransaction(signed.serialize());
+  
+  // Wait for confirmation
+  await connection.confirmTransaction(signature);
+
+  return signature;
 } 

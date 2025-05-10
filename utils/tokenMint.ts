@@ -2,10 +2,10 @@ import { Connection, clusterApiUrl, Keypair, PublicKey, Commitment } from '@sola
 import { StickManToken } from '../contracts/StickManToken';
 // token minted succesfully
 // Initialize connection to Solana network with custom configuration
-const connection = new Connection(clusterApiUrl('devnet'), {
+const connection = new Connection(process.env.HELIUS_RPC_URL || 'https://api.devnet.solana.com', {
   commitment: 'confirmed',
   confirmTransactionInitialTimeout: 60000,
-  wsEndpoint: 'wss://api.devnet.solana.com/',
+  wsEndpoint: process.env.HELIUS_RPC_URL_SOCKET || 'wss://api.devnet.solana.com/',
   httpHeaders: {
     'Content-Type': 'application/json',
   },
@@ -60,9 +60,19 @@ export async function initializeToken() {
   try {
     if (!mintAddress) {
       console.log('Initializing token...');
-      // Try to create token with retry mechanism
-      mintAddress = await retryWithBackoff(() => stickManToken.createToken());
-      console.log('Token created with address:', mintAddress.toBase58());
+      try {
+        // Try to create token with retry mechanism
+        mintAddress = await retryWithBackoff(() => stickManToken.createToken());
+        console.log('Token created with address:', mintAddress.toBase58());
+      } catch (error: any) {
+        // If we get an airdrop error, return the default mint address
+        if (error?.message?.includes('airdrop limit reached') || 
+            error?.message?.includes('Testnet airdrop limit reached')) {
+          console.log('Airdrop limit reached, using default mint address...');
+          return new PublicKey('EYn3Xp9ut4wLyvPSCFgnri7NzK5PHtoJAN2W2sippuoL');
+        }
+        throw error;
+      }
     }
     return mintAddress;
   } catch (error: any) {
@@ -71,7 +81,6 @@ export async function initializeToken() {
         error?.message?.includes('Too Many Requests') ||
         error?.message?.includes('rate limit')) {
       console.log('Rate limited, assuming token already exists...');
-      // Return a default mint address or handle this case appropriately
       return new PublicKey('EYn3Xp9ut4wLyvPSCFgnri7NzK5PHtoJAN2W2sippuoL');
     }
     console.error('Error creating token:', error);

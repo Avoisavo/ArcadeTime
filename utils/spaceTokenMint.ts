@@ -6,14 +6,14 @@ import { SpaceToken } from '../contracts/SpaceToken';
 const connectionConfig: ConnectionConfig = {
   commitment: 'confirmed',
   confirmTransactionInitialTimeout: 60000, // 60 seconds
-  wsEndpoint: 'wss://api.devnet.solana.com/',
+  wsEndpoint: process.env.HELIUS_RPC_URL_SOCKET || 'wss://api.devnet.solana.com/',
   httpHeaders: {
     'Content-Type': 'application/json',
   },
 };
 
 const connection = new Connection(
-  'https://api.devnet.solana.com',
+  process.env.HELIUS_RPC_URL || 'https://api.devnet.solana.com',
   connectionConfig
 );
 
