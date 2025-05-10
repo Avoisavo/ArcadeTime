@@ -178,7 +178,7 @@ export default function StickmanGame() {
 
     // Load background image
     const backgroundImage = new Image();
-    backgroundImage.src = '/arcade/stickmanbg.png';
+    // backgroundImage.src = '/arcade/stickmanbg.png';
     
     let backgroundLoaded = false;
     backgroundImage.onload = () => {
