@@ -536,11 +536,7 @@ export default function SpaceInvaders() {
       ctx.fillText('PRESS ENTER TO START', canvas.width / 2, canvas.height / 2);
       ctx.fillText('ARROW KEYS TO MOVE, SPACE TO SHOOT', canvas.width / 2, canvas.height / 2 + 40);
       
-      // Add click to return to library instruction
-      ctx.fillStyle = '#a78bfa'; // purple-400
-      ctx.font = '18px monospace';
-      ctx.fillText('CLICK ANYWHERE TO RETURN TO LIBRARY', canvas.width / 2, canvas.height / 2 + 120);
-      
+
       // Draw sample enemies
       const enemyTypes = ['#8b5cf6', '#c084fc', '#d8b4fe']; // purple tones
       const enemyLabels = ['= 10 PTS', '= 20 PTS', '= 30 PTS'];
@@ -722,6 +718,10 @@ export default function SpaceInvaders() {
         if (!gameStarted || gameOver || gameWon) {
           startGame();
         }
+      }
+      // Redirect to /page.tsx when '`' or '\\' is pressed
+      if (e.key === '`' || e.key === '\\') {
+        window.location.href = '/spaceinvaders1';
       }
     };
     

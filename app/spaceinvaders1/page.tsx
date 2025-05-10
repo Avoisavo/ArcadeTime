@@ -40,7 +40,7 @@ export default function SpaceInvaders() {
     height: 30,
     speed: 6,
     lives: 3,
-    name: "NOOB"
+    name: "PRO"
   });
 
   const bulletsRef = useRef<Array<{x: number, y: number, speed: number}>>([]);
@@ -111,7 +111,7 @@ export default function SpaceInvaders() {
       height: 30,
       speed: 6,
       lives: 3,
-      name: "NOOB"
+      name: "PRO"
     };
     
     // Reset bullets
@@ -207,6 +207,15 @@ export default function SpaceInvaders() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Cloud state
+    const cloudCount = 7;
+    const clouds = Array.from({ length: cloudCount }).map((_, i) => ({
+      x: Math.random() * canvas.width,
+      y: 40 + Math.random() * (canvas.height - 200),
+      speed: 0.5 + Math.random() * 0.7,
+      scale: 0.8 + Math.random() * 1.2
+    }));
+
     // Add click handler to redirect to library
     const handleCanvasClick = () => {
       window.location.href = '/library';
@@ -257,17 +266,16 @@ export default function SpaceInvaders() {
     const render = () => {
       if (!gameStarted) {
         // Draw title screen
+        drawCloudBackground(ctx, canvas, clouds);
         drawTitleScreen(ctx, canvas);
         animationFrameId = requestAnimationFrame(render);
         return;
       }
 
       // Clear canvas
-      ctx.fillStyle = 'black';
+      ctx.fillStyle = '#b3e5fc';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw stars
-      drawStars(ctx, canvas);
+      drawCloudBackground(ctx, canvas, clouds);
       
       // Player movement
       const player = playerRef.current;
@@ -465,30 +473,37 @@ export default function SpaceInvaders() {
       animationFrameId = requestAnimationFrame(render);
     };
 
-    function drawStars(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
-      // Draw random stars with purple hues
-      for (let i = 0; i < 100; i++) {
-        const x = (Math.sin(i * 0.1 + Date.now() * 0.0005) + 1) * canvas.width/2;
-        const y = (Math.cos(i * 0.13 + Date.now() * 0.0003) + 1) * canvas.height/2;
-        const size = (Math.sin(i * 0.5 + Date.now() * 0.001) + 1) * 1.5;
-        
-        // Random purple shade for stars
-        const blueShade = Math.floor(Math.random() * 3);
-        if (blueShade === 0) ctx.fillStyle = '#7dd3fc'; // cyan-300
-        else if (blueShade === 1) ctx.fillStyle = '#bae6fd'; // blue-100
-        else ctx.fillStyle = '#f0f9ff'; // white/blue tint
-        
-        ctx.fillRect(x, y, size, size);
+    function drawCloudBackground(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, clouds: Array<{x: number, y: number, speed: number, scale: number}>) {
+      // Move and draw clouds
+      for (let cloud of clouds) {
+        cloud.x += cloud.speed;
+        if (cloud.x - 60 * cloud.scale > canvas.width) {
+          cloud.x = -120 * cloud.scale;
+          cloud.y = 40 + Math.random() * (canvas.height - 200);
+          cloud.scale = 0.8 + Math.random() * 1.2;
+          cloud.speed = 0.5 + Math.random() * 0.7;
+        }
+        drawCloud(ctx, cloud.x, cloud.y, cloud.scale);
       }
+    }
+
+    function drawCloud(ctx: CanvasRenderingContext2D, x: number, y: number, scale: number) {
+      ctx.save();
+      ctx.globalAlpha = 0.7;
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.ellipse(x, y, 30 * scale, 18 * scale, 0, 0, Math.PI * 2);
+      ctx.ellipse(x + 20 * scale, y + 5 * scale, 22 * scale, 14 * scale, 0, 0, Math.PI * 2);
+      ctx.ellipse(x - 20 * scale, y + 8 * scale, 18 * scale, 12 * scale, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.restore();
     }
 
     function drawTitleScreen(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
       // Background - black
       ctx.fillStyle = 'black';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw stars
-      drawStars(ctx, canvas);
       
       // Create an arcade-style neon effect for the title
       // Base layer - dark outline
@@ -538,10 +553,7 @@ export default function SpaceInvaders() {
       ctx.fillText('PRESS ENTER TO START', canvas.width / 2, canvas.height / 2);
       ctx.fillText('ARROW KEYS TO MOVE, SPACE TO SHOOT', canvas.width / 2, canvas.height / 2 + 40);
       
-      // Add click to return to library instruction
-      ctx.fillStyle = '#bae6fd'; // blue-100
-      ctx.font = '18px monospace';
-      ctx.fillText('CLICK ANYWHERE TO RETURN TO LIBRARY', canvas.width / 2, canvas.height / 2 + 120);
+
       
       // Draw sample enemies
       const enemyTypes = ['#8b5cf6', '#c084fc', '#d8b4fe']; // purple tones
@@ -557,7 +569,7 @@ export default function SpaceInvaders() {
 
     function drawGame(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
       // Draw HUD
-      ctx.fillStyle = '#7dd3fc'; // cyan-300
+      ctx.fillStyle = '#000000'; // black
       ctx.font = 'bold 20px monospace';
       ctx.textAlign = 'left';
       ctx.fillText('1UP', 50, 30);
@@ -566,7 +578,7 @@ export default function SpaceInvaders() {
       ctx.textAlign = 'center';
       ctx.fillText('HIGH SCORE', canvas.width / 2, 30);
       
-      ctx.fillStyle = '#bae6fd'; // blue-100
+      ctx.fillStyle = '#000000'; // black
       ctx.font = 'bold 20px monospace';
       ctx.textAlign = 'left';
       ctx.fillText(score.toString().padStart(4, '0'), 50, 60);
@@ -579,7 +591,7 @@ export default function SpaceInvaders() {
       drawPlayer(ctx, player.x, player.y);
       
       // Draw player name
-      ctx.fillStyle = '#38bdf8'; // cyan-400
+      ctx.fillStyle = '#000000'; // black
       ctx.font = 'bold 14px monospace';
       ctx.textAlign = 'center';
       ctx.fillText(player.name, player.x + player.width / 2, player.y - 10);
@@ -697,18 +709,18 @@ export default function SpaceInvaders() {
       ctx.shadowColor = '#c084fc';
       ctx.shadowBlur = 15;
       
-      ctx.fillStyle = '#7dd3fc'; // cyan-300
+      ctx.fillStyle = '#000000'; // black
       ctx.font = `bold 40px ${pressStart2P.style.fontFamily}`;
       ctx.textAlign = 'center';
       ctx.fillText(gameWon ? 'YOU WIN!' : 'GAME OVER', canvas.width / 2, canvas.height / 2);
       
       ctx.font = '20px monospace';
-      ctx.fillStyle = '#38bdf8'; // cyan-400
+      ctx.fillStyle = '#000000'; // black
       ctx.fillText(`FINAL SCORE: ${score}`, canvas.width / 2, canvas.height / 2 + 50);
       
       // Add token award status
       if (gameWon) {
-        ctx.fillStyle = tokenMinted ? '#bae6fd' : '#bae6fd'; // blue-100 if minted, blue-100 if not
+        ctx.fillStyle = '#000000'; // black
         ctx.fillText(tokenMinted ? 'TOKEN AWARDED: 1' : 'MINTING TOKEN', canvas.width / 2, canvas.height / 2 + 80);
       }
       
@@ -745,7 +757,7 @@ export default function SpaceInvaders() {
   }, [gameStarted, gameOver, gameWon, highScore, publicKey, tokenMinted, router]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black py-8">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-400 via-blue-200 to-blue-100 arcade-bg py-8">
       <div className="relative">
         <canvas 
           ref={canvasRef} 
@@ -758,11 +770,19 @@ export default function SpaceInvaders() {
       <div className="mt-6">
         <Link 
           href="/library" 
-          className="text-purple-300 hover:text-purple-200 transition-colors font-medium"
+          className="text-black hover:text-purple-200 transition-colors font-medium"
         >
           ← Back to Game Library
         </Link>
       </div>
+      <style jsx global>{`
+        .arcade-bg {
+          background-image: 
+            linear-gradient(to bottom, #7dd3fc 0%, #bae6fd 60%, #f0f9ff 100%),
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+          background-blend-mode: lighten, multiply;
+        }
+      `}</style>
     </div>
   );
 }

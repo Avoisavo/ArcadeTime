@@ -14,35 +14,50 @@ const MarketplacePage = () => {
         <div className="mb-12">
           <h2 className="text-2xl font-bold text-white mb-6 arcade-glow">Rare Items</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow arcade-card-glow">
-              <div className="flex flex-col">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-purple-300 arcade-glow">Rare Item 1</span>
-                  <span className="text-yellow-400 text-sm arcade-glow">Limited Edition</span>
+            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow arcade-card-glow flex flex-col items-center justify-between min-h-[260px] transition-transform hover:scale-105">
+              <div className="w-full flex flex-col items-center">
+                <div className="flex flex-col items-center mb-4 w-full">
+                  <span className="text-purple-300 arcade-glow text-lg mb-1">Cosmic Shield</span>
+                  <span className="text-yellow-400 text-xs arcade-glow">Limited Edition</span>
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col items-center w-full mb-2">
                   <span className="text-white">Price:</span>
                   <span className="text-white font-mono">100 SPACE</span>
                 </div>
-                <button className="mt-4 w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-lg transition-colors arcade-btn arcade-glow">
-                  Purchase
-                </button>
               </div>
+              <button className="mt-4 w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-lg transition-colors arcade-btn arcade-glow">
+                Purchase
+              </button>
             </div>
-            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow arcade-card-glow">
-              <div className="flex flex-col">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-purple-300 arcade-glow">Rare Item 2</span>
-                  <span className="text-yellow-400 text-sm arcade-glow">Limited Edition</span>
+            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow arcade-card-glow flex flex-col items-center justify-between min-h-[260px] transition-transform hover:scale-105">
+              <div className="w-full flex flex-col items-center">
+                <div className="flex flex-col items-center mb-4 w-full">
+                  <span className="text-purple-300 arcade-glow text-lg mb-1">Nova Blaster</span>
+                  <span className="text-yellow-400 text-xs arcade-glow">Limited Edition</span>
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col items-center w-full mb-2">
                   <span className="text-white">Price:</span>
                   <span className="text-white font-mono">150 SPACE</span>
                 </div>
-                <button className="mt-4 w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-lg transition-colors arcade-btn arcade-glow">
-                  Purchase
-                </button>
               </div>
+              <button className="mt-4 w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-lg transition-colors arcade-btn arcade-glow">
+                Purchase
+              </button>
+            </div>
+            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow arcade-card-glow flex flex-col items-center justify-between min-h-[260px] transition-transform hover:scale-105">
+              <div className="w-full flex flex-col items-center">
+                <div className="flex flex-col items-center mb-4 w-full">
+                  <span className="text-purple-300 arcade-glow text-lg mb-1">Quantum Core</span>
+                  <span className="text-yellow-400 text-xs arcade-glow">Limited Edition</span>
+                </div>
+                <div className="flex flex-col items-center w-full mb-2">
+                  <span className="text-white">Price:</span>
+                  <span className="text-white font-mono">200 SPACE</span>
+                </div>
+              </div>
+              <button className="mt-4 w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-lg transition-colors arcade-btn arcade-glow">
+                Purchase
+              </button>
             </div>
           </div>
         </div>
@@ -51,35 +66,50 @@ const MarketplacePage = () => {
         <div>
           <h2 className="text-2xl font-bold text-white mb-6 arcade-glow">Unlimited Supply</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow arcade-card-glow">
-              <div className="flex flex-col">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-purple-300 arcade-glow">Common Item 1</span>
-                  <span className="text-green-400 text-sm arcade-glow">Unlimited</span>
+            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow arcade-card-glow flex flex-col items-center justify-between min-h-[260px] transition-transform hover:scale-105">
+              <div className="w-full flex flex-col items-center">
+                <div className="flex flex-col items-center mb-4 w-full">
+                  <span className="text-purple-300 arcade-glow text-lg mb-1">Energy Cell</span>
+                  <span className="text-green-400 text-xs arcade-glow">Unlimited</span>
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col items-center w-full mb-2">
                   <span className="text-white">Price:</span>
                   <span className="text-white font-mono">50 SPACE</span>
                 </div>
-                <button className="mt-4 w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-lg transition-colors arcade-btn arcade-glow">
-                  Purchase
-                </button>
               </div>
+              <button className="mt-4 w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-lg transition-colors arcade-btn arcade-glow">
+                Purchase
+              </button>
             </div>
-            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow arcade-card-glow">
-              <div className="flex flex-col">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-purple-300 arcade-glow">Common Item 2</span>
-                  <span className="text-green-400 text-sm arcade-glow">Unlimited</span>
+            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow arcade-card-glow flex flex-col items-center justify-between min-h-[260px] transition-transform hover:scale-105">
+              <div className="w-full flex flex-col items-center">
+                <div className="flex flex-col items-center mb-4 w-full">
+                  <span className="text-purple-300 arcade-glow text-lg mb-1">Star Fragment</span>
+                  <span className="text-green-400 text-xs arcade-glow">Unlimited</span>
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col items-center w-full mb-2">
                   <span className="text-white">Price:</span>
                   <span className="text-white font-mono">75 SPACE</span>
                 </div>
-                <button className="mt-4 w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-lg transition-colors arcade-btn arcade-glow">
-                  Purchase
-                </button>
               </div>
+              <button className="mt-4 w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-lg transition-colors arcade-btn arcade-glow">
+                Purchase
+              </button>
+            </div>
+            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow arcade-card-glow flex flex-col items-center justify-between min-h-[260px] transition-transform hover:scale-105">
+              <div className="w-full flex flex-col items-center">
+                <div className="flex flex-col items-center mb-4 w-full">
+                  <span className="text-purple-300 arcade-glow text-lg mb-1">Space Crystal</span>
+                  <span className="text-green-400 text-xs arcade-glow">Unlimited</span>
+                </div>
+                <div className="flex flex-col items-center w-full mb-2">
+                  <span className="text-white">Price:</span>
+                  <span className="text-white font-mono">100 SPACE</span>
+                </div>
+              </div>
+              <button className="mt-4 w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-lg transition-colors arcade-btn arcade-glow">
+                Purchase
+              </button>
             </div>
           </div>
         </div>

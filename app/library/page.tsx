@@ -85,6 +85,17 @@ export default function Library() {
     setRandomGames(getRandomGames(5));
   }, []);
   
+  // Keyboard shortcut: redirect to /spaceinvaders1 on '`' or '\'
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === '`' ) {
+        window.location.href = '/spaceinvaders1';
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+  
   const handleSelectGame = (game: ArcadeGame): void => {
     setSelectedGame(game);
   };
