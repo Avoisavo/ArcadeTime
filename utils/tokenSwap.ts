@@ -1,61 +1,69 @@
-import { Connection, PublicKey, Transaction, SystemProgram, sendAndConfirmTransaction } from '@solana/web3.js';
-import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, createTransferInstruction } from '@solana/spl-token';
+import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { getOrCreateAssociatedTokenAccount, createTransferInstruction } from '@solana/spl-token';
+import { mintSpaceToken } from './spaceTokenMint';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 
+const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
+
 export async function executeSwap(
-  walletAddress: string,
+  userWallet: string,
   fromTokenMint: PublicKey,
-  toTokenMint: PublicKey | null, // null for SOL
+  toTokenMint: PublicKey,
   amount: number,
-  solAmount: number,
+  recipientAddress: string,
   wallet: WalletContextState
 ): Promise<string> {
-  if (!wallet.publicKey || !wallet.signTransaction) {
-    throw new Error('Wallet not connected');
-  }
+  try {
+    if (!wallet.publicKey || !wallet.signTransaction) {
+      throw new Error('Wallet not connected or missing required functionality');
+    }
 
-  const RPC_URL = process.env.NEXT_PUBLIC_HELIUS_RPC_URL as string;
-  const connection = new Connection(RPC_URL);
-  
-  // Get the user's token account
-  const fromTokenAccount = await getAssociatedTokenAddress(
-    fromTokenMint,
-    wallet.publicKey
-  );
+    const userPublicKey = new PublicKey(userWallet);
+    const recipientPublicKey = new PublicKey(recipientAddress);
 
-  // Create transaction
-  const transaction = new Transaction();
+    // Create token accounts
+    const userFromTokenAccount = await getOrCreateAssociatedTokenAccount(
+      connection,
+      wallet as any, // Type assertion to bypass signer requirement
+      fromTokenMint,
+      userPublicKey,
+      true,
+      'confirmed',
+      { commitment: 'confirmed' }
+    );
 
-  // Add transfer instruction for STICKMAN tokens
-  transaction.add(
-    createTransferInstruction(
-      fromTokenAccount,
-      new PublicKey('YOUR_PROGRAM_ADDRESS'), // Replace with your program's address that will handle the swap
+    const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
+      connection,
+      wallet as any, // Type assertion to bypass signer requirement
+      fromTokenMint,
+      recipientPublicKey,
+      true,
+      'confirmed',
+      { commitment: 'confirmed' }
+    );
+
+    // Create transfer instruction
+    const transferInstruction = createTransferInstruction(
+      userFromTokenAccount.address,
+      recipientTokenAccount.address,
       wallet.publicKey,
-      amount * Math.pow(10, 9) // Convert to lamports (assuming 9 decimals)
-    )
-  );
+      amount
+    );
 
-  // Add SOL transfer instruction
-  transaction.add(
-    SystemProgram.transfer({
-      fromPubkey: new PublicKey('YOUR_PROGRAM_ADDRESS'), // Replace with your program's address
-      toPubkey: wallet.publicKey,
-      lamports: solAmount * Math.pow(10, 9) // Convert SOL to lamports
-    })
-  );
+    // Create and send transaction
+    const transaction = new Transaction().add(transferInstruction);
+    const signedTransaction = await wallet.signTransaction(transaction);
+    const transferSignature = await connection.sendRawTransaction(signedTransaction.serialize());
 
-  // Get recent blockhash
-  const { blockhash } = await connection.getLatestBlockhash();
-  transaction.recentBlockhash = blockhash;
-  transaction.feePayer = wallet.publicKey;
+    // Wait for confirmation
+    await connection.confirmTransaction(transferSignature);
 
-  // Sign and send transaction
-  const signed = await wallet.signTransaction(transaction);
-  const signature = await connection.sendRawTransaction(signed.serialize());
-  
-  // Wait for confirmation
-  await connection.confirmTransaction(signature);
+    // Mint Space tokens to user
+    const mintSignature = await mintSpaceToken(userWallet);
 
-  return signature;
+    return `${transferSignature},${mintSignature}`;
+  } catch (error) {
+    console.error('Error executing swap:', error);
+    throw error;
+  }
 } 

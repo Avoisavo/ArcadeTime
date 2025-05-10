@@ -69,21 +69,12 @@ const GameImageFallback = ({ title, color }: { title: string; color: string }) =
   );
 };
 
-// Helper function to handle RPC errors
-const handleRPCError = (error: any) => {
-  console.warn('RPC Error:', error);
-  // You can add additional error handling logic here
-  return null;
-};
-
 export default function GamesPage() {
   const [selectedGame, setSelectedGame] = useState<ArcadeGame | null>(null);
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
   const [randomGames, setRandomGames] = useState<ArcadeGame[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   
-  // Get 5 random arcade games with debouncing
+  // Get 5 random arcade games
   const getRandomGames = (count: number): ArcadeGame[] => {
     const shuffled = [...arcadeGames].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
@@ -91,50 +82,16 @@ export default function GamesPage() {
   
   // Use useEffect to ensure random selection only happens client-side
   useEffect(() => {
-    try {
-      setRandomGames(getRandomGames(5));
-      setIsLoading(false);
-    } catch (error) {
-      setError('Failed to load games. Please try again later.');
-      setIsLoading(false);
-    }
+    setRandomGames(getRandomGames(5));
   }, []);
   
-  const handleSelectGame = async (game: ArcadeGame): Promise<void> => {
-    try {
-      // Add a small delay to prevent rapid requests
-      await new Promise(resolve => setTimeout(resolve, 500));
-      window.open('https://explorer.solana.com/address/ANuRhZia44rvZpR1zX2bSiRLHEbDWzmMwtLwzMTpuwSB/tokens?cluster=devnet', '_blank');
-    } catch (error) {
-      handleRPCError(error);
-    }
+  const handleSelectGame = (game: ArcadeGame): void => {
+    window.open('https://explorer.solana.com/address/ANuRhZia44rvZpR1zX2bSiRLHEbDWzmMwtLwzMTpuwSB/tokens?cluster=devnet', '_blank');
   };
 
   const handleImageError = (id: number) => {
     setImageErrors((prev) => ({ ...prev, [id]: true }));
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen flex-col bg-gradient-to-b from-gray-900 to-black arcade-bg">
-        <Header activeTab="Games" />
-        <div className="flex flex-1 items-center justify-center">
-          <div className="text-white text-xl">Loading games...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex min-h-screen flex-col bg-gradient-to-b from-gray-900 to-black arcade-bg">
-        <Header activeTab="Games" />
-        <div className="flex flex-1 items-center justify-center">
-          <div className="text-red-500 text-xl">{error}</div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-gray-900 to-black arcade-bg">
@@ -154,17 +111,13 @@ export default function GamesPage() {
                       ? 'border-purple-500 shadow-lg bg-gradient-to-br from-purple-900/20 to-blue-900/20 arcade-selected-card' 
                       : 'border-gray-800 hover:border-purple-500/50 hover:shadow-lg hover:bg-gradient-to-br hover:from-purple-900/10 hover:to-blue-900/10'
                   }`}
-                  onClick={async () => {
-                    try {
-                      if (game.title === "Space Invaders") {
-                        window.location.href = "/spaceinvaders";
-                      } else if (game.title === "Stick-Man") {
-                        window.location.href = "/stickman";
-                      } else {
-                        await handleSelectGame(game);
-                      }
-                    } catch (error) {
-                      handleRPCError(error);
+                  onClick={() => {
+                    if (game.title === "Space Invaders") {
+                      window.location.href = "/spaceinvaders";
+                    } else if (game.title === "Stick-Man") {
+                      window.location.href = "/stickman";
+                    } else {
+                      handleSelectGame(game);
                     }
                   }}
                 >

@@ -4,7 +4,6 @@ import { FC, ReactNode, useMemo } from 'react';
 import { ConnectionProvider, WalletProvider as SolanaWalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
-import { clusterApiUrl } from '@solana/web3.js';
 import '@solana/wallet-adapter-react-ui/styles.css';
 
 interface Props {
@@ -12,17 +11,16 @@ interface Props {
 }
 
 export const WalletProvider: FC<Props> = ({ children }) => {
-  // You can also provide a custom RPC endpoint
-  const endpoint = useMemo(() => {
-    // Use environment variable if available, otherwise fallback to public endpoint
-    return process.env.NEXT_PUBLIC_SOLANA_RPC_URL || clusterApiUrl('devnet');
-  }, []);
+  // Use Helius RPC endpoint exclusively
+  const getRpcEndpoint = () => {
+    return 'https://api.devnet.solana.com';
+  };
 
   // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking and lazy loading
   const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
+    <ConnectionProvider endpoint={getRpcEndpoint()}>
       <SolanaWalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           {children}

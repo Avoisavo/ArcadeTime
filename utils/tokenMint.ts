@@ -1,17 +1,10 @@
 import { Connection, clusterApiUrl, Keypair, PublicKey, Commitment } from '@solana/web3.js';
 import { StickManToken } from '../contracts/StickManToken';
-
-const RPC_URL = process.env.NEXT_PUBLIC_HELIUS_RPC_URL as string;
-const WS_URL = process.env.NEXT_PUBLIC_HELIUS_RPC_URL_SOCKET as string;
-
+// token minted succesfully
 // Initialize connection to Solana network with custom configuration
-const connection = new Connection(RPC_URL, {
+const connection = new Connection('https://api.solana.devnet', {
   commitment: 'confirmed',
-  confirmTransactionInitialTimeout: 60000,
-  wsEndpoint: WS_URL,
-  httpHeaders: {
-    'Content-Type': 'application/json',
-  },
+  wsEndpoint: 'wss://api.solana.devnet/',
 });
 
 // Create a new keypair for the mint authority (in production, this should be stored securely)

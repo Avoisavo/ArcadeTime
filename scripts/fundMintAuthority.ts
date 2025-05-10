@@ -2,10 +2,8 @@ import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, Ke
 import { getMintAuthority } from './getMintAuthority';
 
 async function fundMintAuthority() {
-  if (!process.env.HELIUS_RPC_URL) {
-    throw new Error('HELIUS_RPC_URL environment variable is not set');
-  }
-  const connection = new Connection(process.env.HELIUS_RPC_URL, 'confirmed');
+  // Connect to devnet
+  const connection = new Connection('https://api.solana.devnet', 'confirmed');
   
   // Get the mint authority
   const mintAuthority = getMintAuthority();

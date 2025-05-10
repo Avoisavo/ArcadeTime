@@ -119,11 +119,33 @@ export default function StickmanGame() {
     try {
       setIsMinting(true);
       setMintStatus('Minting your Stick-Man token...');
-      const signature = await mintStickManToken(publicKey.toBase58());
-      setMintStatus(`Token minted successfully! Transaction: ${signature}`);
-    } catch (error) {
+      
+      // Add retry logic with exponential backoff
+      let retries = 3;
+      let delay = 1000;
+      
+      while (retries > 0) {
+        try {
+          const signature = await mintStickManToken(publicKey.toBase58());
+          setMintStatus(`Token minted successfully! Transaction: ${signature}`);
+          break;
+        } catch (error: any) {
+          if (error.message?.includes('429') || error.message?.includes('Too Many Requests')) {
+            retries--;
+            if (retries === 0) {
+              throw new Error('Rate limit exceeded. Please try again in a few minutes.');
+            }
+            setMintStatus(`Rate limited. Retrying in ${delay/1000} seconds...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= 2; // Exponential backoff
+          } else {
+            throw error;
+          }
+        }
+      }
+    } catch (error: any) {
       console.error('Error minting token:', error);
-      setMintStatus('Error minting token. Please try again.');
+      setMintStatus(`Error minting token: ${error.message || 'Please try again later.'}`);
     } finally {
       setIsMinting(false);
     }

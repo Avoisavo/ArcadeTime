@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useWallet } from '@solana/wallet-adapter-react';
 import dynamic from 'next/dynamic';
 import { getUserTokenBalances, TokenBalance } from '@/utils/tokenBalance';
-import Swap from './swap';
 
 // Dynamically import the WalletMultiButton with no SSR
 const WalletMultiButton = dynamic(
@@ -49,12 +48,6 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
     { name: 'Marketplace', path: '/marketplace' }
   ];
 
-  const handleSwap = async (from: string, to: string, amount: number) => {
-    // TODO: Implement swap logic
-    console.log('Swapping', amount, from, 'to', to);
-    setSwapOpen(false);
-  };
-
   return (
     <header className="bg-black border-b border-purple-700/30 text-white p-4 flex justify-between items-center sticky top-0 z-50 arcade-header">
       {/* User Info Section */}
@@ -69,16 +62,9 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
                 {publicKey.toString().slice(0, 4)}...{publicKey.toString().slice(-4)}
               </span>
             </div>
-            <div className="flex">
-              {tokenBalances.map((token, index) => (
-                <div 
-                  key={token.symbol} 
-                  className={`bg-gray-900 px-3 py-1 border border-purple-700/40 ${
-                    index === 0 ? 'rounded-l-full' : 'border-l-0'
-                  } ${
-                    index === tokenBalances.length - 1 ? 'rounded-r-full' : ''
-                  }`}
-                >
+            <div className="flex space-x-3">
+              {tokenBalances.map((token) => (
+                <div key={token.symbol} className="bg-gray-900 px-3 py-1 rounded-full border border-purple-700/40">
                   <span className="text-xs text-purple-300">{token.symbol}</span>
                   <span className="text-sm font-mono ml-2">{token.balance}</span>
                 </div>
@@ -108,41 +94,19 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
           </Link>
         ))}
         {/* Swap Button */}
-        <button
-          onClick={() => setSwapOpen(true)}
+        <Link
+          href="/swap"
           className="text-sm font-medium py-2 px-6 relative group overflow-hidden transition-all duration-300 text-gray-400 hover:text-gray-200 focus:outline-none"
         >
           <span className="relative z-10 uppercase tracking-wider font-bold">Swap</span>
           <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-900/40 to-blue-900/40 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100"></span>
-        </button>
+        </Link>
       </div>
 
       {/* Wallet Button */}
       <div className="flex items-center">
         {mounted && <WalletMultiButton className="arcade-button" />}
       </div>
-
-      {/* Swap Modal */}
-      {swapOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-          <div className="bg-gray-900 rounded-xl shadow-2xl p-8 relative w-full max-w-md mx-auto">
-            <button
-              onClick={() => setSwapOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold focus:outline-none"
-              aria-label="Close"
-            >
-              ×
-            </button>
-            <Swap 
-              onSwap={handleSwap}
-              balances={tokenBalances.reduce((acc, token) => ({
-                ...acc,
-                [token.symbol]: token.balance
-              }), {})}
-            />
-          </div>
-        </div>
-      )}
 
       <style jsx global>{`
         .arcade-header {

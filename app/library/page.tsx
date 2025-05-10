@@ -100,7 +100,7 @@ export default function Library() {
         <Navbar activePage="my games" />
         <div className="min-h-screen p-8 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)] ml-64 flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-4xl font-bold mb-8 text-white arcade-text-shadow">Arcade Game Library</h1>
+            <h1 className="text-4xl font-bold mb-8 text-white arcade-text-shadow animate-pulse">Arcade Game Library</h1>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {randomGames.map((game) => (
@@ -134,8 +134,10 @@ export default function Library() {
                                   src={game.image}
                                   alt={game.title}
                                   fill
+                                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                   style={{ objectFit: "contain" }}
                                   onError={() => handleImageError(game.id)}
+                                  className="arcade-image-glow"
                                 />
                               </div>
                             </div>
@@ -143,8 +145,8 @@ export default function Library() {
                         )}
                       </div>
                       <h2 className="text-xl font-semibold mb-2 text-white arcade-game-title">{game.title}</h2>
-                      <p className="text-gray-400 text-sm mb-2">{game.description}</p>
-                      <p className="text-purple-400 text-xs mt-auto">Released: {game.year}</p>
+                      <p className="text-gray-400 text-sm mb-2 arcade-text-glow">{game.description}</p>
+                      <p className="text-purple-400 text-xs mt-auto arcade-text-glow">Released: {game.year}</p>
                     </Link>
                   ) : game.title === "Space Invaders" ? (
                     <Link href="/spaceinvaders" className="flex flex-col h-full">
@@ -159,8 +161,10 @@ export default function Library() {
                                   src={game.image}
                                   alt={game.title}
                                   fill
+                                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                   style={{ objectFit: "contain" }}
                                   onError={() => handleImageError(game.id)}
+                                  className="arcade-image-glow"
                                 />
                               </div>
                             </div>
@@ -168,8 +172,8 @@ export default function Library() {
                         )}
                       </div>
                       <h2 className="text-xl font-semibold mb-2 text-white arcade-game-title">{game.title}</h2>
-                      <p className="text-gray-400 text-sm mb-2">{game.description}</p>
-                      <p className="text-purple-400 text-xs mt-auto">Released: {game.year}</p>
+                      <p className="text-gray-400 text-sm mb-2 arcade-text-glow">{game.description}</p>
+                      <p className="text-purple-400 text-xs mt-auto arcade-text-glow">Released: {game.year}</p>
                     </Link>
                   ) : (
                     <div className="flex flex-col h-full">
@@ -184,8 +188,10 @@ export default function Library() {
                                   src={game.image}
                                   alt={game.title}
                                   fill
+                                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                   style={{ objectFit: "contain" }}
                                   onError={() => handleImageError(game.id)}
+                                  className="arcade-image-glow"
                                 />
                               </div>
                             </div>
@@ -193,8 +199,8 @@ export default function Library() {
                         )}
                       </div>
                       <h2 className="text-xl font-semibold mb-2 text-white arcade-game-title">{game.title}</h2>
-                      <p className="text-gray-400 text-sm mb-2">{game.description}</p>
-                      <p className="text-purple-400 text-xs mt-auto">Released: {game.year}</p>
+                      <p className="text-gray-400 text-sm mb-2 arcade-text-glow">{game.description}</p>
+                      <p className="text-purple-400 text-xs mt-auto arcade-text-glow">Released: {game.year}</p>
                     </div>
                   )}
                 </div>
@@ -217,8 +223,10 @@ export default function Library() {
                                 src={selectedGame.image}
                                 alt={selectedGame.title}
                                 fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 style={{ objectFit: "contain" }}
                                 onError={() => handleImageError(selectedGame.id)}
+                                className="arcade-image-glow"
                               />
                             </div>
                           </div>
@@ -227,8 +235,8 @@ export default function Library() {
                     </div>
                     <div>
                       <h3 className="text-xl font-semibold mb-3 text-white arcade-text-glow">{selectedGame.title}</h3>
-                      <p className="text-gray-400 mb-4">{selectedGame.description}</p>
-                      <p className="text-purple-400 mb-8">Released: {selectedGame.year}</p>
+                      <p className="text-gray-400 mb-4 arcade-text-glow">{selectedGame.description}</p>
+                      <p className="text-purple-400 mb-8 arcade-text-glow">Released: {selectedGame.year}</p>
                       <button 
                         onClick={() => {
                           if (selectedGame.title === "Space Invaders") {
@@ -237,7 +245,7 @@ export default function Library() {
                             window.location.href = "/stickman";
                           }
                         }}
-                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white px-6 py-2 rounded-md font-bold uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_10px_rgba(138,43,226,0.5)] hover:shadow-[0_0_15px_rgba(138,43,226,0.8)]"
+                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white px-6 py-2 rounded-md font-bold uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_10px_rgba(138,43,226,0.5)] hover:shadow-[0_0_15px_rgba(138,43,226,0.8)] arcade-btn"
                       >
                         Play Now
                       </button>
@@ -256,6 +264,8 @@ export default function Library() {
         </div>
       </div>
       <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
         .arcade-bg {
           background-image: 
             linear-gradient(to bottom, rgba(25,25,25,1) 0%, rgba(10,10,10,1) 100%),
@@ -268,31 +278,193 @@ export default function Library() {
             0 0 2px #fff, 
             0 0 5px rgba(138,43,226,0.8), 
             0 0 10px rgba(138,43,226,0.5);
+          font-family: 'Press Start 2P', monospace;
+          letter-spacing: 2px;
         }
         
         .arcade-text-glow {
           text-shadow: 0 0 2px #fff, 0 0 5px rgba(138,43,226,0.8);
+          font-family: 'Press Start 2P', monospace;
+          letter-spacing: 1px;
         }
         
         .arcade-card-glow:hover {
           box-shadow: 0 0 15px rgba(138,43,226,0.3);
+          transform: translateY(-2px);
+          transition: all 0.3s ease;
         }
         
         .arcade-selected-card {
           box-shadow: 0 0 20px rgba(138,43,226,0.4) !important;
+          animation: selected-pulse 2s infinite;
         }
         
         .arcade-game-title {
           text-shadow: 0 0 2px #fff, 0 0 5px rgba(138,43,226,0.6);
+          font-family: 'Press Start 2P', monospace;
+          letter-spacing: 1px;
         }
         
         .arcade-game-container {
           box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
           border: 1px solid rgba(138,43,226,0.3);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .arcade-game-container::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: linear-gradient(
+            45deg,
+            transparent 0%,
+            rgba(138,43,226,0.1) 50%,
+            transparent 100%
+          );
+          animation: scanline 3s linear infinite;
         }
         
         .arcade-details-card {
           box-shadow: 0 0 30px rgba(0,0,0,0.8);
+          border: 2px solid rgba(138,43,226,0.3);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .arcade-details-card::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(
+            45deg,
+            transparent 0%,
+            rgba(138,43,226,0.1) 50%,
+            transparent 100%
+          );
+          animation: scanline 3s linear infinite;
+        }
+        
+        .arcade-image-glow {
+          filter: drop-shadow(0 0 5px rgba(138,43,226,0.5));
+          transition: all 0.3s ease;
+        }
+        
+        .arcade-image-glow:hover {
+          filter: drop-shadow(0 0 10px rgba(138,43,226,0.8));
+          transform: scale(1.05);
+        }
+        
+        .arcade-btn {
+          position: relative;
+          overflow: hidden;
+          font-family: 'Press Start 2P', monospace;
+          letter-spacing: 1px;
+        }
+        
+        .arcade-btn::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: linear-gradient(
+            45deg,
+            transparent 0%,
+            rgba(255,255,255,0.1) 50%,
+            transparent 100%
+          );
+          transform: rotate(45deg);
+          animation: button-shine 3s linear infinite;
+        }
+        
+        @keyframes scanline {
+          0% {
+            transform: translateY(-100%);
+          }
+          100% {
+            transform: translateY(100%);
+          }
+        }
+        
+        @keyframes selected-pulse {
+          0% {
+            box-shadow: 0 0 20px rgba(138,43,226,0.4);
+          }
+          50% {
+            box-shadow: 0 0 30px rgba(138,43,226,0.6);
+          }
+          100% {
+            box-shadow: 0 0 20px rgba(138,43,226,0.4);
+          }
+        }
+        
+        @keyframes button-shine {
+          0% {
+            transform: translateX(-100%) rotate(45deg);
+          }
+          100% {
+            transform: translateX(100%) rotate(45deg);
+          }
+        }
+        
+        /* CRT screen effect */
+        .arcade-bg::before {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15) 1px,
+            transparent 1px,
+            transparent 2px
+          );
+          pointer-events: none;
+          z-index: 1;
+        }
+        
+        .arcade-bg::after {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(
+            circle at center,
+            transparent 0%,
+            rgba(0, 0, 0, 0.2) 100%
+          );
+          pointer-events: none;
+          z-index: 1;
+        }
+        
+        /* Vignette effect */
+        .arcade-bg::before {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(
+            circle at center,
+            transparent 0%,
+            rgba(0, 0, 0, 0.3) 100%
+          );
+          pointer-events: none;
+          z-index: 2;
         }
       `}</style>
     </div>
