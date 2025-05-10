@@ -44,8 +44,8 @@ const InventoryPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow">
               <div className="flex flex-col items-center">
-                <span className="text-purple-300 mb-4">City Theme</span>
-                <img src="/inventory/morning.png" alt="Sky Theme" className="w-32 h-32 rounded-lg object-cover mb-2" />
+                <span className="text-purple-300 mb-4">Sky Theme</span>
+                <img src="/inventory/sky.png" alt="Sky Theme" className="w-32 h-32 rounded-lg object-cover mb-2" />
               </div>
             </div>
             <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow">

@@ -411,7 +411,7 @@ export default function StickmanGame() {
       // Draw controls guide
       ctx.fillStyle = '#ffffff';
       ctx.font = '14px sans-serif';
-      ctx.fillText("Controls: Arrow Keys to move, Space to jump, Z to attack", 20, 580);
+      ctx.fillText("Controls: Arrow Keys to move, Space to jump, Z to attack", 400, 580);
 
       if (gameOver) {
         // Draw game over

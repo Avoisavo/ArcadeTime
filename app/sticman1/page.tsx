@@ -479,7 +479,7 @@ export default function StickmanGame() {
       // Draw controls guide
       ctx.fillStyle = '#ffffff';
       ctx.font = '14px sans-serif';
-      ctx.fillText("Controls: Arrow Keys to move, Space to jump, Z to attack", 20, 580);
+      ctx.fillText("Controls: Arrow Keys to move, Space to jump, Z to attack", 400, 580);
 
       if (gameOver) {
         // Draw game over
@@ -744,10 +744,10 @@ export default function StickmanGame() {
         />
       </div>
       
-      <div className="mt-8">
+      <div className="mt-8 flex justify-center">
         <Link 
           href="/library" 
-          className="text-[#00ffff] hover:text-[#ff00ff] transition-colors font-bold uppercase tracking-wider arcade-text-glow cyan-glow"
+          className="text-black hover:text-[#ff00ff] transition-colors font-bold uppercase tracking-wider arcade-text-glow cyan-glow text-center"
         >
           ← Back to Game Library
         </Link>
