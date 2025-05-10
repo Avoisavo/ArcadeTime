@@ -2,15 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { mintStickManToken, initializeToken } from '@/utils/tokenMint';
 
 export default function StickmanGame() {
-  const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [score, setScore] = useState(0);
-  const [gameStarted, setGameStarted] = useState(false);
+  const [gameStarted, setGameStarted] = useState(true);
   const [gameOver, setGameOver] = useState(false);
   const [isMinting, setIsMinting] = useState(false);
   const [mintStatus, setMintStatus] = useState<string>('');
@@ -19,7 +17,7 @@ export default function StickmanGame() {
   // Game state references to access in animation frame
   const playerRef = useRef({
     x: 100,
-    y: 400,
+    y: 440,
     width: 50,
     height: 100,
     speed: 5,
@@ -31,12 +29,12 @@ export default function StickmanGame() {
     yVelocity: 0,
     frameCount: 0,
     animation: 0,
-    label: "NOOB",
+    label: "PRO",
   });
 
   const enemyRef = useRef({
     x: 500,
-    y: 400,
+    y: 440,
     width: 50,
     height: 100,
     speed: 3,
@@ -71,6 +69,42 @@ export default function StickmanGame() {
     initToken();
   }, []);
 
+  // Initialize game state when component mounts
+  useEffect(() => {
+    // Reset player and enemy
+    playerRef.current = {
+      x: 100,
+      y: 440,
+      width: 50,
+      height: 100,
+      speed: 5,
+      jumping: false,
+      attacking: false,
+      attackCooldown: 0,
+      health: 100,
+      direction: 1,
+      yVelocity: 0,
+      frameCount: 0,
+      animation: 0,
+      label: "PRO",
+    };
+    
+    enemyRef.current = {
+      x: 500,
+      y: 440,
+      width: 50,
+      height: 100,
+      speed: 3,
+      health: 100,
+      attacking: false,
+      attackCooldown: 0,
+      direction: -1,
+      frameCount: 0,
+      animation: 0,
+      label: "ENEMIES",
+    };
+  }, []);
+
   const startGame = () => {
     setGameStarted(true);
     setGameOver(false);
@@ -79,7 +113,7 @@ export default function StickmanGame() {
     // Reset player and enemy
     playerRef.current = {
       x: 100,
-      y: 400,
+      y: 440,
       width: 50,
       height: 100,
       speed: 5,
@@ -96,7 +130,7 @@ export default function StickmanGame() {
     
     enemyRef.current = {
       x: 500,
-      y: 400,
+      y: 440,
       width: 50,
       height: 100,
       speed: 3,
@@ -146,13 +180,8 @@ export default function StickmanGame() {
           keysRef.current.right = true;
           break;
         case 'ArrowUp':
-          keysRef.current.up = true;
-          break;
         case ' ':
           keysRef.current.up = true;
-          break;
-        case '1':
-          router.push('/sticman1');
           break;
         case 'z':
         case 'Z':
@@ -170,6 +199,7 @@ export default function StickmanGame() {
           keysRef.current.right = false;
           break;
         case 'ArrowUp':
+        case ' ':
           keysRef.current.up = false;
           break;
         case 'z':
@@ -211,51 +241,111 @@ export default function StickmanGame() {
       if (backgroundLoaded) {
         ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
       } else {
-        // Fallback background with arcade theme
-        // Gradient background
-        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        gradient.addColorStop(0, '#1a1a2e');
-        gradient.addColorStop(1, '#16213e');
-        ctx.fillStyle = gradient;
+        // --- Vibrant blue sky gradient ---
+        const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        skyGradient.addColorStop(0, '#6ec6ff'); // Top sky blue
+        skyGradient.addColorStop(0.7, '#b3e5fc'); // Lighter blue
+        skyGradient.addColorStop(1, '#e1f5fe'); // Near white at horizon
+        ctx.fillStyle = skyGradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Grid pattern
-        ctx.strokeStyle = 'rgba(138, 43, 226, 0.1)';
+        // --- Fluffy clouds ---
+        drawCloud(ctx, 120, 80, 1.2);
+        drawCloud(ctx, 300, 60, 0.8);
+        drawCloud(ctx, 600, 100, 1.5);
+        drawCloud(ctx, 500, 50, 0.7);
+
+        // --- Sun with glow and subtle rays ---
+        // Sun glow
+        const sunX = 700, sunY = 100, sunR = 50;
+        const sunGlow = ctx.createRadialGradient(sunX, sunY, sunR, sunX, sunY, sunR + 40);
+        sunGlow.addColorStop(0, 'rgba(255, 223, 70, 0.8)');
+        sunGlow.addColorStop(1, 'rgba(255, 223, 70, 0)');
+        ctx.beginPath();
+        ctx.arc(sunX, sunY, sunR + 40, 0, Math.PI * 2);
+        ctx.fillStyle = sunGlow;
+        ctx.fill();
+        // Sun body
+        ctx.beginPath();
+        ctx.arc(sunX, sunY, sunR, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFD700';
+        ctx.shadowColor = '#FFD700';
+        ctx.shadowBlur = 20;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        // Sun rays
+        ctx.strokeStyle = 'rgba(255, 223, 70, 0.7)';
+        ctx.lineWidth = 4;
+        for (let i = 0; i < 12; i++) {
+          const angle = (i * Math.PI) / 6;
+          ctx.beginPath();
+          ctx.moveTo(sunX + Math.cos(angle) * (sunR + 5), sunY + Math.sin(angle) * (sunR + 5));
+          ctx.lineTo(sunX + Math.cos(angle) * (sunR + 25), sunY + Math.sin(angle) * (sunR + 25));
+          ctx.stroke();
+        }
+
+        // --- Mountain layers ---
+        // Furthest (lightest)
+        drawMountainRange(ctx, [
+          {x: 0, y: 400}, {x: 100, y: 320}, {x: 250, y: 370}, {x: 400, y: 300}, {x: 600, y: 350}, {x: 800, y: 320}, {x: 800, y: 600}, {x: 0, y: 600}
+        ], '#b2dfdb');
+        // Middle
+        drawMountainRange(ctx, [
+          {x: 0, y: 450}, {x: 120, y: 340}, {x: 300, y: 420}, {x: 500, y: 340}, {x: 700, y: 420}, {x: 800, y: 370}, {x: 800, y: 600}, {x: 0, y: 600}
+        ], '#388e3c');
+        // Foreground (darkest)
+        drawMountainRange(ctx, [
+          {x: 0, y: 500}, {x: 200, y: 380}, {x: 400, y: 480}, {x: 600, y: 400}, {x: 800, y: 500}, {x: 800, y: 600}, {x: 0, y: 600}
+        ], '#2e7d32');
+
+        // --- Mountain shadow on ground ---
+        ctx.fillStyle = 'rgba(44, 62, 80, 0.15)';
+        ctx.beginPath();
+        ctx.moveTo(0, 500);
+        ctx.lineTo(200, 380);
+        ctx.lineTo(400, 480);
+        ctx.lineTo(600, 400);
+        ctx.lineTo(800, 500);
+        ctx.lineTo(800, 520);
+        ctx.lineTo(0, 520);
+        ctx.closePath();
+        ctx.fill();
+
+        // --- Rolling green hills ---
+        ctx.fillStyle = '#8bc34a';
+        ctx.beginPath();
+        ctx.moveTo(0, 520);
+        for (let x = 0; x <= canvas.width; x += 40) {
+          ctx.quadraticCurveTo(x + 20, 510 + Math.sin(x / 80) * 10, x + 40, 520);
+        }
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.lineTo(0, canvas.height);
+        ctx.closePath();
+        ctx.fill();
+
+        // --- Grass details ---
+        ctx.strokeStyle = '#558b2f';
         ctx.lineWidth = 1;
-        const gridSize = 40;
-        for (let x = 0; x < canvas.width; x += gridSize) {
+        for (let x = 0; x < canvas.width; x += 18) {
           ctx.beginPath();
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x, canvas.height);
-          ctx.stroke();
-        }
-        for (let y = 0; y < canvas.height; y += gridSize) {
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(canvas.width, y);
+          ctx.moveTo(x, 520);
+          ctx.lineTo(x + 6, 510 + Math.random() * 8);
           ctx.stroke();
         }
 
-        // Neon glow effect
-        const glowGradient = ctx.createRadialGradient(
-          canvas.width / 2, canvas.height / 2, 0,
-          canvas.width / 2, canvas.height / 2, canvas.width / 2
-        );
-        glowGradient.addColorStop(0, 'rgba(138, 43, 226, 0.1)');
-        glowGradient.addColorStop(1, 'rgba(138, 43, 226, 0)');
-        ctx.fillStyle = glowGradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // --- Cute birds ---
+        for (let i = 0; i < 5; i++) {
+          const x = 100 + i * 120 + Math.sin(Date.now() / 1000 + i) * 10;
+          const y = 80 + Math.cos(Date.now() / 1200 + i) * 10;
+          drawCuteBird(ctx, x, y, i % 2 === 0 ? 1 : -1);
+        }
 
-        // Ground with neon effect
-        ctx.fillStyle = '#0f1c21';
-        ctx.fillRect(0, 500, canvas.width, 100);
-        
-        // Ground glow
-        const groundGlow = ctx.createLinearGradient(0, 500, 0, 510);
-        groundGlow.addColorStop(0, 'rgba(138, 43, 226, 0.3)');
-        groundGlow.addColorStop(1, 'rgba(138, 43, 226, 0)');
-        ctx.fillStyle = groundGlow;
-        ctx.fillRect(0, 500, canvas.width, 10);
+        // --- Flowers and bushes ---
+        for (let i = 0; i < 8; i++) {
+          drawFlower(ctx, 60 + i * 90, 550 + Math.sin(i) * 5, ['#ff69b4', '#fff176', '#f06292', '#fff'][i % 4]);
+        }
+        drawBush(ctx, 180, 540, 1);
+        drawBush(ctx, 600, 545, 1.3);
       }
 
       // Update player position based on input
@@ -396,25 +486,70 @@ export default function StickmanGame() {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '36px sans-serif';
+        // Special victory background effect when player wins
+        if (player.health > 0) {
+          // Create victory particle effect
+          for (let i = 0; i < 50; i++) {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height;
+            const size = Math.random() * 4 + 2;
+            
+            // Draw stars
+            ctx.fillStyle = `rgba(255, 215, 0, ${Math.random() * 0.5 + 0.5})`;
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Draw sparkles
+            ctx.strokeStyle = `rgba(138, 43, 226, ${Math.random() * 0.5 + 0.5})`;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x - size * 2, y);
+            ctx.lineTo(x + size * 2, y);
+            ctx.moveTo(x, y - size * 2);
+            ctx.lineTo(x, y + size * 2);
+            ctx.stroke();
+          }
+          
+          // Victory gradient background
+          const victoryGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          victoryGradient.addColorStop(0, 'rgba(138, 43, 226, 0.3)');
+          victoryGradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.3)');
+          victoryGradient.addColorStop(1, 'rgba(138, 43, 226, 0.3)');
+          ctx.fillStyle = victoryGradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        // Draw victory/defeat text with enhanced styling
+        ctx.fillStyle = player.health > 0 ? '#FFD700' : '#ffffff';
+        ctx.font = 'bold 48px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.shadowColor = player.health > 0 ? '#8A2BE2' : '#ff0000';
+        ctx.shadowBlur = 15;
         ctx.fillText(
-          player.health <= 0 ? 'Game Over!' : 'You Win!', 
-          canvas.width / 2 - 100, 
+          player.health > 0 ? 'VICTORY!' : 'Game Over!', 
+          canvas.width / 2, 
           canvas.height / 2 - 50
         );
         
-        ctx.font = '24px sans-serif';
+        // Reset shadow
+        ctx.shadowBlur = 0;
+        
+        // Draw score with enhanced styling
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 32px sans-serif';
         ctx.fillText(
           `Final Score: ${score}`,
-          canvas.width / 2 - 80,
+          canvas.width / 2,
           canvas.height / 2
         );
         
-        ctx.font = '18px sans-serif';
+        // Draw play again text with enhanced styling
+        ctx.font = 'bold 24px sans-serif';
+        ctx.fillStyle = '#8A2BE2';
         ctx.fillText(
           'Press Enter to play again',
-          canvas.width / 2 - 100,
+          canvas.width / 2,
           canvas.height / 2 + 50
         );
       }
@@ -508,6 +643,76 @@ export default function StickmanGame() {
       ctx.strokeRect(x, y, 100, 15);
     }
 
+    function drawCloud(ctx: CanvasRenderingContext2D, x: number, y: number, scale: number) {
+      ctx.save();
+      ctx.globalAlpha = 0.7;
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.ellipse(x, y, 30 * scale, 18 * scale, 0, 0, Math.PI * 2);
+      ctx.ellipse(x + 20 * scale, y + 5 * scale, 22 * scale, 14 * scale, 0, 0, Math.PI * 2);
+      ctx.ellipse(x - 20 * scale, y + 8 * scale, 18 * scale, 12 * scale, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
+
+    function drawMountainRange(ctx: CanvasRenderingContext2D, points: {x: number, y: number}[], color: string) {
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i++) {
+        ctx.lineTo(points[i].x, points[i].y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+
+    function drawCuteBird(ctx: CanvasRenderingContext2D, x: number, y: number, dir: number) {
+      ctx.save();
+      ctx.strokeStyle = '#222';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(x, y, 7, Math.PI * 0.2, Math.PI * 0.8, false); // body
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(x + dir * 7, y - 2, 2, 0, Math.PI * 2); // head
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawFlower(ctx: CanvasRenderingContext2D, x: number, y: number, color: string) {
+      ctx.save();
+      ctx.strokeStyle = '#388e3c';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y + 10);
+      ctx.stroke();
+      for (let i = 0; i < 5; i++) {
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        const angle = (i * Math.PI * 2) / 5;
+        ctx.ellipse(x + Math.cos(angle) * 4, y + Math.sin(angle) * 4, 3, 5, angle, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.beginPath();
+      ctx.arc(x, y, 2, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawBush(ctx: CanvasRenderingContext2D, x: number, y: number, scale: number) {
+      ctx.save();
+      ctx.fillStyle = '#43a047';
+      ctx.beginPath();
+      ctx.arc(x, y, 14 * scale, 0, Math.PI * 2);
+      ctx.arc(x + 12 * scale, y + 2 * scale, 10 * scale, 0, Math.PI * 2);
+      ctx.arc(x - 12 * scale, y + 2 * scale, 10 * scale, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
     // Handle restart game on Enter key
     const handleRestart = (e: KeyboardEvent) => {
       if (e.key === 'Enter' && gameOver) {
@@ -528,47 +733,21 @@ export default function StickmanGame() {
   }, [gameStarted, gameOver]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 to-black arcade-bg py-8">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-[#6ec6ff] to-[#e1f5fe] arcade-bg py-8">
       
       <div className="relative">
         <canvas 
           ref={canvasRef} 
           width={800} 
           height={600} 
-          className="border-4 border-purple-500/30 rounded-lg shadow-lg arcade-canvas purple-neon-border"
+          className="border-4 border-[#ff00ff]/30 rounded-lg shadow-lg arcade-canvas neon-border"
         />
-        
-        {!gameStarted && !gameOver && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-900/90 to-black/90">
-            <h2 className="text-5xl font-bold text-white mb-8 arcade-title-glow purple-pulse">Stick-Man Battle</h2>
-            <button 
-              onClick={startGame}
-              className="bg-gradient-to-r from-purple-400 to-purple-600 hover:from-purple-600 hover:to-purple-400 text-white font-bold py-3 px-10 rounded-full text-xl uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(138,43,226,0.5)] hover:shadow-[0_0_25px_rgba(138,43,226,0.8)]"
-            >
-              Start Game
-            </button>
-            <div className="mt-12 text-gray-300">
-              <p className="text-center text-purple-300 font-bold uppercase tracking-wider arcade-text-glow purple-glow">Controls:</p>
-              <ul className="mt-4 space-y-2 text-sm grid grid-cols-1 gap-2">
-                <li className="bg-gradient-to-r from-purple-900/20 to-purple-800/20 px-6 py-2 rounded border border-purple-700/30">
-                  <span className="text-purple-400 font-medium">Arrow keys:</span> Move left/right
-                </li>
-                <li className="bg-gradient-to-r from-purple-900/20 to-purple-800/20 px-6 py-2 rounded border border-purple-700/30">
-                  <span className="text-purple-400 font-medium">Space/Up arrow:</span> Jump
-                </li>
-                <li className="bg-gradient-to-r from-purple-900/20 to-purple-800/20 px-6 py-2 rounded border border-purple-700/30">
-                  <span className="text-purple-400 font-medium">Z key:</span> Attack
-                </li>
-              </ul>
-            </div>
-          </div>
-        )}
       </div>
       
       <div className="mt-8">
         <Link 
           href="/library" 
-          className="text-purple-400 hover:text-purple-300 transition-colors font-bold uppercase tracking-wider arcade-text-glow purple-glow"
+          className="text-[#00ffff] hover:text-[#ff00ff] transition-colors font-bold uppercase tracking-wider arcade-text-glow cyan-glow"
         >
           ← Back to Game Library
         </Link>
@@ -579,94 +758,19 @@ export default function StickmanGame() {
           <h2 className="text-2xl font-bold text-white mb-2">Game Over!</h2>
           <p className="text-white mb-4">Score: {score}</p>
           {mintStatus && (
-            <p className={`text-sm ${mintStatus.includes('Error') ? 'text-red-400' : 'text-green-400'} mb-4`}>
+            <p className={`text-sm ${mintStatus.includes('Error') ? 'text-red-400' : 'text-[#00ffff]'} mb-4`}>
               {mintStatus}
             </p>
           )}
           <button
             onClick={startGame}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white px-6 py-2 rounded-md font-bold uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_10px_rgba(138,43,226,0.5)] hover:shadow-[0_0_15px_rgba(138,43,226,0.8)]"
+            className="bg-gradient-to-r from-[#ff00ff] to-[#00ffff] hover:from-[#00ffff] hover:to-[#ff00ff] text-white px-6 py-2 rounded-md font-bold uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_10px_rgba(255,0,255,0.5)] hover:shadow-[0_0_15px_rgba(0,255,255,0.8)]"
             disabled={isMinting}
           >
             {isMinting ? 'Minting...' : 'Play Again'}
           </button>
         </div>
       )}
-
-      <style jsx global>{`
-        .arcade-bg {
-          background-image: 
-            linear-gradient(to bottom, rgba(25,25,25,1) 0%, rgba(10,10,10,1) 100%),
-            url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-          background-blend-mode: multiply;
-        }
-        
-        .arcade-text-shadow {
-          text-shadow: 
-            0 0 2px #fff, 
-            0 0 5px rgba(138,43,226,0.8), 
-            0 0 10px rgba(138,43,226,0.5);
-        }
-        
-        .arcade-text-glow {
-          text-shadow: 0 0 2px #fff, 0 0 5px rgba(138,43,226,0.8);
-        }
-
-        .arcade-title-glow {
-          text-shadow: 
-            0 0 5px #fff, 
-            0 0 10px #fff, 
-            0 0 15px #8a2be2, 
-            0 0 20px #8a2be2, 
-            0 0 25px #8a2be2;
-          animation: pulsate 2s infinite alternate;
-        }
-
-        .arcade-canvas {
-          box-shadow: 
-            0 0 0 4px rgba(138,43,226,0.3),
-            0 0 30px rgba(138,43,226,0.2),
-            0 0 60px rgba(138,43,226,0.1);
-        }
-
-        /* Purple Neon Styles */
-        .purple-neon {
-          text-shadow: 
-            0 0 2px #fff, 
-            0 0 5px rgba(138,43,226,0.8), 
-            0 0 10px rgba(138,43,226,0.5);
-        }
-        
-        .purple-glow {
-          text-shadow: 0 0 2px #fff, 0 0 5px rgba(138,43,226,0.8);
-        }
-
-        .purple-pulse {
-          text-shadow: 
-            0 0 5px #fff, 
-            0 0 10px #fff, 
-            0 0 15px #8a2be2, 
-            0 0 20px #8a2be2, 
-            0 0 25px #8a2be2;
-          animation: purplePulsate 2s infinite alternate;
-        }
-
-        .purple-neon-border {
-          box-shadow: 
-            0 0 0 4px rgba(138,43,226,0.3),
-            0 0 30px rgba(138,43,226,0.2);
-        }
-
-        @keyframes pulsate {
-          0% { opacity: 0.9; }
-          100% { opacity: 1; }
-        }
-
-        @keyframes purplePulsate {
-          0% { opacity: 0.9; text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #8a2be2, 0 0 20px #8a2be2, 0 0 25px #8a2be2; }
-          100% { opacity: 1; text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #8a2be2, 0 0 20px #8a2be2, 0 0 30px #8a2be2, 0 0 40px #8a2be2; }
-        }
-      `}</style>
     </div>
   );
 }

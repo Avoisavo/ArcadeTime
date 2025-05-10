@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useWallet } from '@solana/wallet-adapter-react';
 import dynamic from 'next/dynamic';
 import { getUserTokenBalances, TokenBalance } from '@/utils/tokenBalance';
+import Swap from './swap';
 
 // Dynamically import the WalletMultiButton with no SSR
 const WalletMultiButton = dynamic(
@@ -47,6 +48,12 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
     { name: 'Inventory', path: '/inventory' },
     { name: 'Marketplace', path: '/marketplace' }
   ];
+
+  const handleSwap = async (from: string, to: string, amount: number) => {
+    // TODO: Implement swap logic
+    console.log('Swapping', amount, from, 'to', to);
+    setSwapOpen(false);
+  };
 
   return (
     <header className="bg-black border-b border-purple-700/30 text-white p-4 flex justify-between items-center sticky top-0 z-50 arcade-header">
@@ -126,6 +133,13 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
             >
               ×
             </button>
+            <Swap 
+              onSwap={handleSwap}
+              balances={tokenBalances.reduce((acc, token) => ({
+                ...acc,
+                [token.symbol]: token.balance
+              }), {})}
+            />
           </div>
         </div>
       )}
