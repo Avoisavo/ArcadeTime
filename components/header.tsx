@@ -43,7 +43,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
   }, [publicKey]);
 
   const tabs = [
-    { name: 'Games', path: '/games' },
+    { name: 'Games', path: '/library' },
     { name: 'Inventory', path: '/inventory' },
     { name: 'Marketplace', path: '/marketplace' }
   ];
@@ -119,6 +119,15 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
         
         .arcade-text-glow {
           text-shadow: 0 0 2px #fff, 0 0 5px rgba(138,43,226,0.8);
+        }
+
+        .arcade-text-shadow {
+          text-shadow: 
+            0 0 2px #fff, 
+            0 0 5px rgba(138,43,226,0.8), 
+            0 0 10px rgba(138,43,226,0.5);
+          font-family: 'Press Start 2P', monospace;
+          letter-spacing: 2px;
         }
       `}</style>
     </header>

@@ -25,11 +25,11 @@ export default function Home() {
       
       {/* Corner arcade cabinet details */}
       <div className="absolute top-4 left-4 w-28 h-14 bg-black border-2 border-yellow-400 rounded flex items-center justify-center z-10">
-        <p className="text-yellow-400 text-sm font-bold pixel-font rotate-[-5deg]">HIGH SCORE</p>
+        <p className="text-yellow-400 text-sm font-bold pixel-font rotate-[-5deg]">SOLANA</p>
       </div>
       
       <div className="absolute top-4 right-4 w-28 h-14 bg-black border-2 border-yellow-400 rounded flex items-center justify-center z-10">
-        <p className="text-yellow-400 text-sm font-bold pixel-font rotate-[5deg]">CREDITS: 1</p>
+        <p className="text-yellow-400 text-sm font-bold pixel-font rotate-[5deg]"> MEGA</p>
       </div>
 
       {/* Game characters */}
