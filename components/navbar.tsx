@@ -65,27 +65,6 @@ const Navbar: React.FC<NavbarProps> = ({ activePage }) => {
         </nav>
       </div>
 
-      <div className="mt-auto p-4">
-        <div className="flex items-center border border-purple-500 rounded-md p-2 bg-gradient-to-r from-purple-900/40 to-blue-900/40 shadow-[0_0_15px_rgba(138,43,226,0.3)]">
-          <div className="w-12 h-12 relative mr-2 rounded-md overflow-hidden arcade-pixel-border">
-            <Image
-              src="/arcade/metaloot.png"
-              alt="Meta Loot"
-              fill
-              className="object-contain"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23712CF9'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='8' fill='white' text-anchor='middle' dominant-baseline='middle'%3EML%3C/text%3E%3C/svg%3E";
-              }}
-            />
-          </div>
-          <div>
-            <h3 className="text-white text-xs font-bold uppercase arcade-text-glow tracking-wider">META LOOT</h3>
-            <p className="text-purple-300 text-xs">10 rewards</p>
-          </div>
-        </div>
-      </div>
-
       <style jsx global>{`
         .arcade-sidebar {
           background-image: 
