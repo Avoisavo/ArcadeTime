@@ -3,7 +3,8 @@ import { getAccount, getAssociatedTokenAddress } from '@solana/spl-token';
 import { initializeSpaceToken } from './spaceTokenMint';
 import { initializeToken } from './tokenMint';
 
-const connection = new Connection(process.env.HELIUS_RPC_URL || 'https://api.devnet.solana.com', 'confirmed');
+const RPC_URL = process.env.NEXT_PUBLIC_HELIUS_RPC_URL as string;
+const connection = new Connection(RPC_URL, 'confirmed');
 
 export interface TokenBalance {
   symbol: string;

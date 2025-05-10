@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useWallet } from '@solana/wallet-adapter-react';
 import dynamic from 'next/dynamic';
-import Swap from './swap';
 import { getUserTokenBalances, TokenBalance } from '@/utils/tokenBalance';
 
 // Dynamically import the WalletMultiButton with no SSR
@@ -63,9 +62,16 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
                 {publicKey.toString().slice(0, 4)}...{publicKey.toString().slice(-4)}
               </span>
             </div>
-            <div className="flex space-x-3">
-              {tokenBalances.map((token) => (
-                <div key={token.symbol} className="bg-gray-900 px-3 py-1 rounded-full border border-purple-700/40">
+            <div className="flex">
+              {tokenBalances.map((token, index) => (
+                <div 
+                  key={token.symbol} 
+                  className={`bg-gray-900 px-3 py-1 border border-purple-700/40 ${
+                    index === 0 ? 'rounded-l-full' : 'border-l-0'
+                  } ${
+                    index === tokenBalances.length - 1 ? 'rounded-r-full' : ''
+                  }`}
+                >
                   <span className="text-xs text-purple-300">{token.symbol}</span>
                   <span className="text-sm font-mono ml-2">{token.balance}</span>
                 </div>
@@ -120,7 +126,6 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
             >
               ×
             </button>
-            <Swap />
           </div>
         </div>
       )}

@@ -14,7 +14,8 @@ export async function executeSwap(
     throw new Error('Wallet not connected');
   }
 
-  const connection = new Connection(process.env.HELIUS_RPC_URL || 'https://api.devnet.solana.com');
+  const RPC_URL = process.env.NEXT_PUBLIC_HELIUS_RPC_URL as string;
+  const connection = new Connection(RPC_URL);
   
   // Get the user's token account
   const fromTokenAccount = await getAssociatedTokenAddress(

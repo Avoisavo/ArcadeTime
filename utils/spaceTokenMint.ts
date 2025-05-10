@@ -3,19 +3,17 @@ import { SpaceToken } from '../contracts/SpaceToken';
 // token minted succesfully
 
 // Initialize connection to Solana network with custom configuration
-const connectionConfig: ConnectionConfig = {
+const RPC_URL = process.env.NEXT_PUBLIC_HELIUS_RPC_URL as string;
+const WS_URL = process.env.NEXT_PUBLIC_HELIUS_RPC_URL_SOCKET as string;
+
+const connection = new Connection(RPC_URL, {
   commitment: 'confirmed',
-  confirmTransactionInitialTimeout: 60000, // 60 seconds
-  wsEndpoint: process.env.HELIUS_RPC_URL_SOCKET || 'wss://api.devnet.solana.com/',
+  confirmTransactionInitialTimeout: 60000,
+  wsEndpoint: WS_URL,
   httpHeaders: {
     'Content-Type': 'application/json',
   },
-};
-
-const connection = new Connection(
-  process.env.HELIUS_RPC_URL || 'https://api.devnet.solana.com',
-  connectionConfig
-);
+});
 
 // Store the mint authority keypair in localStorage
 const MINT_AUTHORITY_KEY = 'space_token_mint_authority';

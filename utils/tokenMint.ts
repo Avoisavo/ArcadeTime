@@ -1,11 +1,14 @@
 import { Connection, clusterApiUrl, Keypair, PublicKey, Commitment } from '@solana/web3.js';
 import { StickManToken } from '../contracts/StickManToken';
-// token minted succesfully
+
+const RPC_URL = process.env.NEXT_PUBLIC_HELIUS_RPC_URL as string;
+const WS_URL = process.env.NEXT_PUBLIC_HELIUS_RPC_URL_SOCKET as string;
+
 // Initialize connection to Solana network with custom configuration
-const connection = new Connection(process.env.HELIUS_RPC_URL || 'https://api.devnet.solana.com', {
+const connection = new Connection(RPC_URL, {
   commitment: 'confirmed',
   confirmTransactionInitialTimeout: 60000,
-  wsEndpoint: process.env.HELIUS_RPC_URL_SOCKET || 'wss://api.devnet.solana.com/',
+  wsEndpoint: WS_URL,
   httpHeaders: {
     'Content-Type': 'application/json',
   },
