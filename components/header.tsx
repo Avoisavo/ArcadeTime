@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useWallet } from '@solana/wallet-adapter-react';
 import dynamic from 'next/dynamic';
-import { getUserTokenBalances, TokenBalance } from '@/utils/tokenBalance';
 
 // Dynamically import the WalletMultiButton with no SSR
 const WalletMultiButton = dynamic(
@@ -19,28 +18,11 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
   const { connected, publicKey } = useWallet();
   const [mounted, setMounted] = useState(false);
-  const [swapOpen, setSwapOpen] = useState(false);
-  const [tokenBalances, setTokenBalances] = useState<TokenBalance[]>([]);
 
   // Only show the wallet button after component has mounted
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  // Fetch token balances when wallet is connected
-  useEffect(() => {
-    const fetchBalances = async () => {
-      if (publicKey) {
-        const balances = await getUserTokenBalances(publicKey.toString());
-        setTokenBalances(balances);
-      }
-    };
-
-    fetchBalances();
-    // Set up polling for balance updates
-    const interval = setInterval(fetchBalances, 10000); // Poll every 10 seconds
-    return () => clearInterval(interval);
-  }, [publicKey]);
 
   const tabs = [
     { name: 'Games', path: '/library' },
@@ -53,23 +35,13 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
       {/* User Info Section */}
       <div className="flex items-center space-x-4">
         {connected && publicKey && (
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
-                <span className="text-xs font-bold">{publicKey.toString().slice(0, 2)}</span>
-              </div>
-              <span className="text-sm text-gray-300 font-mono">
-                {publicKey.toString().slice(0, 4)}...{publicKey.toString().slice(-4)}
-              </span>
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
+              <span className="text-xs font-bold">{publicKey.toString().slice(0, 2)}</span>
             </div>
-            <div className="flex space-x-3">
-              {tokenBalances.map((token) => (
-                <div key={token.symbol} className="bg-gray-900 px-3 py-1 rounded-full border border-purple-700/40">
-                  <span className="text-xs text-purple-300">{token.symbol}</span>
-                  <span className="text-sm font-mono ml-2">{token.balance}</span>
-                </div>
-              ))}
-            </div>
+            <span className="text-sm text-gray-300 font-mono">
+              {publicKey.toString().slice(0, 4)}...{publicKey.toString().slice(-4)}
+            </span>
           </div>
         )}
       </div>

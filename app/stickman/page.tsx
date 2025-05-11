@@ -4,7 +4,16 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { mintStickManToken, initializeToken } from '@/utils/tokenMint';
+import { WalletContextState } from '@solana/wallet-adapter-react';
+import dynamic from 'next/dynamic';
+
+// Dynamically import the wallet button to avoid hydration issues
+const WalletButton = dynamic(
+  () => Promise.resolve(WalletMultiButton),
+  { ssr: false }
+);
 
 export default function StickmanGame() {
   const router = useRouter();
@@ -67,7 +76,6 @@ export default function StickmanGame() {
         setMintStatus('Error initializing token system. Please try again later.');
       }
     };
-
     initToken();
   }, []);
 
@@ -75,6 +83,7 @@ export default function StickmanGame() {
     setGameStarted(true);
     setGameOver(false);
     setScore(0);
+    setMintStatus('');
     
     // Reset player and enemy
     playerRef.current = {
@@ -115,37 +124,14 @@ export default function StickmanGame() {
       setMintStatus('Please connect your wallet to receive the token');
       return;
     }
-
     try {
       setIsMinting(true);
       setMintStatus('Minting your Stick-Man token...');
-      
-      // Add retry logic with exponential backoff
-      let retries = 3;
-      let delay = 1000;
-      
-      while (retries > 0) {
-        try {
-          const signature = await mintStickManToken(publicKey.toBase58());
-          setMintStatus(`Token minted successfully! Transaction: ${signature}`);
-          break;
-        } catch (error: any) {
-          if (error.message?.includes('429') || error.message?.includes('Too Many Requests')) {
-            retries--;
-            if (retries === 0) {
-              throw new Error('Rate limit exceeded. Please try again in a few minutes.');
-            }
-            setMintStatus(`Rate limited. Retrying in ${delay/1000} seconds...`);
-            await new Promise(resolve => setTimeout(resolve, delay));
-            delay *= 2; // Exponential backoff
-          } else {
-            throw error;
-          }
-        }
-      }
-    } catch (error: any) {
+      const signature = await mintStickManToken(publicKey.toBase58());
+      setMintStatus(`Token minted successfully! Transaction: ${signature}`);
+    } catch (error) {
       console.error('Error minting token:', error);
-      setMintStatus(`Error minting token: ${error.message || 'Please try again later.'}`);
+      setMintStatus('Error minting token. Please try again.');
     } finally {
       setIsMinting(false);
     }
@@ -206,11 +192,16 @@ export default function StickmanGame() {
 
     // Load background image
     const backgroundImage = new Image();
-    backgroundImage.src = '/arcade/stickmanbg.png';
+    backgroundImage.src = '/stickmanbg.png';
     
     let backgroundLoaded = false;
     backgroundImage.onload = () => {
       backgroundLoaded = true;
+    };
+
+    backgroundImage.onerror = () => {
+      console.warn('Failed to load background image, using fallback');
+      backgroundLoaded = false;
     };
 
     // Game loop
@@ -551,6 +542,12 @@ export default function StickmanGame() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 to-black arcade-bg py-8">
+      {!connected && (
+        <div className="mb-8 text-center">
+          <p className="text-yellow-400 font-bold mb-4">Please connect your wallet to play and receive tokens</p>
+          <WalletButton className="bg-gradient-to-r from-purple-400 to-purple-600 hover:from-purple-600 hover:to-purple-400 text-white font-bold py-3 px-10 rounded-full text-xl uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(138,43,226,0.5)] hover:shadow-[0_0_25px_rgba(138,43,226,0.8)]" />
+        </div>
+      )}
       
       <div className="relative">
         <canvas 

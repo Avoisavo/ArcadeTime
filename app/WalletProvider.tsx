@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const WalletProvider: FC<Props> = ({ children }) => {
-  // Use Helius RPC endpoint exclusively
+  // Use a reliable RPC endpoint with proper configuration
   const getRpcEndpoint = () => {
     return 'https://api.devnet.solana.com';
   };
