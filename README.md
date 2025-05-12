@@ -1,5 +1,4 @@
-**#🎮 Arcade Time
-**
+##🎮 Arcade Time
 Arcade Time is a blockchain-powered gaming platform where each game has its own unique token—unlike traditional platforms where a single token is shared across all games. Users can play, earn, swap, and trade tokens tied specifically to games like Tetris, Pac-Man, Stickman, Space Invaders, and Galaga.
 Key Highlights:
 Each game has a dedicated token.
