@@ -117,7 +117,7 @@ Convert tokens to SOL and vice versa
 Legacy token system for retired games
 Full token utility in marketplace and in-game purchases
 
-#🔧 Development Scripts**
+🔧 Development Scripts
 
 npm run dev – Start dev server
 npm run build – Build for production
