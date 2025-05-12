@@ -79,7 +79,7 @@ Wallet-based user authentication
 Real-time asset marketplace
 Intuitive UI with Tailwind CSS
 
-🚀 Getting Started
+# 🚀 Getting Started
 
 Prerequisites
 Node.js (Latest LTS)
