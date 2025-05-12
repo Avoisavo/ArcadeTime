@@ -1,14 +1,25 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Header from '@/components/header';
+import SwapAssets from '@/components/swapassets';
 
 const InventoryPage = () => {
+  const [isSwapModalOpen, setIsSwapModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-black font-arcade">
       <Header activeTab="Inventory" />
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-8 text-white arcade-text-shadow animate-pulse">Inventory</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold text-white arcade-text-shadow animate-pulse">Inventory</h1>
+          <button 
+            onClick={() => setIsSwapModalOpen(true)}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg arcade-border-glow transition-all"
+          >
+            Swap Assets
+          </button>
+        </div>
         
         {/* Power Assets Section */}
         <div className="mb-12">
@@ -16,21 +27,45 @@ const InventoryPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow">
               <div className="flex flex-col items-center">
-                <img src="/inventory/powershoes.png" alt="Power Shoes" className="w-20 h-20 mb-2 arcade-motion" />
-                <span className="text-purple-300 mb-2">Power Shoes</span>
+                <img 
+                  src="/inventory/stickman.png" 
+                  alt="stickman" 
+                  className="w-20 h-20 mb-2 arcade-motion" 
+                  draggable
+                  onDragStart={e => {
+                    e.dataTransfer.setData('application/json', JSON.stringify({ name: 'stickman', img: '/inventory/stickman.png' }));
+                  }}
+                />
+                <span className="text-purple-300 mb-2">Stickman boi</span>
                 <span className="text-white font-mono">2</span>
               </div>
             </div>
             <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow">
               <div className="flex flex-col items-center">
-                <img src="/inventory/poison.png" alt="Power Poison" className="w-20 h-20 mb-2 arcade-motion" />
+                <img 
+                  src="/inventory/poison.png" 
+                  alt="Power Poison" 
+                  className="w-20 h-20 mb-2 arcade-motion" 
+                  draggable
+                  onDragStart={e => {
+                    e.dataTransfer.setData('application/json', JSON.stringify({ name: 'Power Poison', img: '/inventory/poison.png' }));
+                  }}
+                />
                 <span className="text-purple-300 mb-2">Power Poison</span>
                 <span className="text-white font-mono">3</span>
               </div>
             </div>
             <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow">
               <div className="flex flex-col items-center">
-                <img src="/inventory/sheild.png" alt="Power Shield" className="w-20 h-20 mb-2 arcade-motion" />
+                <img 
+                  src="/inventory/sheild.png" 
+                  alt="Power Shield" 
+                  className="w-20 h-20 mb-2 arcade-motion" 
+                  draggable
+                  onDragStart={e => {
+                    e.dataTransfer.setData('application/json', JSON.stringify({ name: 'Power Shield', img: '/inventory/sheild.png' }));
+                  }}
+                />
                 <span className="text-purple-300 mb-2">Power Shield</span>
                 <span className="text-white font-mono">1</span>
               </div>
@@ -57,6 +92,7 @@ const InventoryPage = () => {
           </div>
         </div>
       </main>
+      <SwapAssets open={isSwapModalOpen} onClose={() => setIsSwapModalOpen(false)} />
       <style jsx global>{`
         @font-face {
           font-family: 'Press Start 2P';
