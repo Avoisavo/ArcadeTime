@@ -35,7 +35,7 @@ const TOKEN_MINT_ADDRESS = 'GVboqa9PyTFoLBYfdZNuNRPzqLPyKkQtnQXX3awLANW8';
 export default function SwapPage() {
   const wallet = useWallet();
   const { connection } = useConnection();
-  const [fromToken, setFromToken] = useState(SOL_TOKEN);
+  const [fromToken, setFromToken] = useState(STICKMAN_TOKEN);
   const [toToken, setToToken] = useState(SPACE_TOKEN);
   const [amount, setAmount] = useState('');
   const [swapping, setSwapping] = useState(false);
@@ -43,6 +43,7 @@ export default function SwapPage() {
   const [tokenMint, setTokenMint] = useState<PublicKey | null>(null);
   const [userTokenAccount, setUserTokenAccount] = useState<PublicKey | null>(null);
   const [tokenAccountExists, setTokenAccountExists] = useState(false);
+  const [transactionHash, setTransactionHash] = useState('');
 
   useEffect(() => {
     const initializeTokens = async () => {
@@ -78,6 +79,13 @@ export default function SwapPage() {
       initializeTokens();
     }
   }, [wallet.publicKey, connection]);
+
+  const truncateHash = (hash: string) => {
+    if (hash.length > 16) {
+      return hash.substring(0, 8) + '...' + hash.substring(hash.length - 8);
+    }
+    return hash;
+  };
 
   const handleSwap = async () => {
     if (!wallet.publicKey || !tokenMint) {
@@ -133,7 +141,8 @@ export default function SwapPage() {
       });
 
       setTokenAccountExists(true);
-      setMessage(`Transfer complete! You received 1 token. Transaction: ${signature}`);
+      setTransactionHash(signature);
+      setMessage(`Transfer complete! You received 1 Space Token.`);
       setAmount(''); // Clear the input after successful transfer
     } catch (error: any) {
       console.error('Error during transfer:', error);
@@ -173,7 +182,7 @@ export default function SwapPage() {
               <div className="flex items-center bg-gray-900 rounded px-4 py-3 border border-purple-700/40 arcade-inner-glow hover:scale-105 transition-transform">
                 <select
                   value={fromToken.symbol}
-                  onChange={(e) => handleTokenChange('from', TOKENS.find(t => t.symbol === e.target.value) || SOL_TOKEN)}
+                  onChange={(e) => handleTokenChange('from', TOKENS.find(t => t.symbol === e.target.value) || STICKMAN_TOKEN)}
                   className="bg-transparent text-purple-400 font-extrabold text-lg arcade-glow focus:outline-none cursor-pointer"
                 >
                   {TOKENS.map((token) => (
@@ -231,6 +240,18 @@ export default function SwapPage() {
           {message && (
             <div className="mt-6 text-center text-purple-300 arcade-glow text-lg">
               {message}
+              {transactionHash && (
+                <div className="mt-2">
+                  <a 
+                    href={`https://explorer.solana.com/tx/${transactionHash}?cluster=devnet`}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:text-blue-300 text-sm underline break-words inline-block"
+                  >
+                    {truncateHash(transactionHash)}
+                  </a>
+                </div>
+              )}
             </div>
           )}
           <div className="absolute -inset-0.5 rounded-2xl pointer-events-none arcade-animated-border"></div>
