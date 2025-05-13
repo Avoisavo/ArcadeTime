@@ -135,6 +135,6 @@ NFT-based asset skins
 
 Tan Zhi Wei – Full Stack Developer
 
-![System File Structure](@systemfile.png)
+![System File Structure](/public/systemfile.png)
 
 *Figure: Project directory structure overview*
