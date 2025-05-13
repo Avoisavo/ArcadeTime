@@ -89,12 +89,20 @@ Solana Libraries:
 
 # Features
 
-Multiple classic arcade games
-Game-specific SPL tokens
-Solana blockchain integration
-Wallet-based user authentication
-Real-time asset marketplace
-Intuitive UI with Tailwind CSS
+🎮 Multi-Game Asset Portability
+Seamlessly transfer in-game assets between supported games like Tetris, Pac-Man, Stickman, Space Invaders, and Galaga.
+💰 Unified Token System
+All games share a single Arcade token, allowing for easy earning, spending, and swapping across titles.
+🔄 Token-to-SOL Swapping
+Convert earned tokens to SOL and vice versa, giving real-world value to in-game achievements.
+🛒 Decentralized Marketplace
+Buy, sell, or trade game assets directly with other players using game tokens or legacy tokens.
+🔐 Wallet-Based Authentication
+Secure user login through Phantom wallet integration.
+🧩 Legacy Token System
+Retired games are still supported with legacy tokens that preserve asset value and usage.
+🎯 Smart Inventory System
+Switch assets between games with an intuitive inventory system — assets auto-update in-game after switching.
 
 # Getting Started
 
@@ -143,14 +151,28 @@ npm run create-token – Create new SPL token
 
 # How We Are Different
 
-Unlike traditional game platforms that share a single currency, Arcade Time gives each game its own economy while offering flexibility and utility via legacy tokens and swap mechanisms. This model ensures assets retain value even after a game is removed from the platform.
+Most gaming platforms isolate each game’s economy, locking players’ progress and purchases within a single title. Arcade Time breaks that barrier by introducing:
+🔁 Asset and Progress Continuity
+Game assets and player experience move across games, ensuring nothing is lost when switching titles.
+🧠 Skill Recognition Across Games
+If you're skilled in one game, the platform recognizes it in another — adapting your starting state accordingly.
+🪙 Flexible Game Economies
+Each game has its own token but exists within a unified economy, allowing cross-game and SOL interaction.
+📦 Legacy Support
+Even if a game is removed from the platform, your assets still hold value through our legacy token mechanism.
 
 # Future Plans
 
-Expand game catalog
-Introduce cross-platform leaderboard
-Mobile version support
-NFT-based asset skins
+🕹️ Add More Games
+Expand the Arcade Time library with more retro and indie titles.
+🏆 Cross-Game Leaderboards
+Introduce global and game-specific leaderboards to reward top players across the platform.
+📱 Mobile Platform Integration
+Bring Arcade Time to mobile devices for on-the-go play and asset management.
+🎨 NFT-Based Skins & Assets
+Enable unique, ownable skins and items powered by NFT technology for trading and customization.
+⚙️ Developer SDK & Game Onboarding
+Provide tools for developers to integrate their own games into the Arcade Time ecosystem.
 
 # Team
 
