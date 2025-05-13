@@ -185,5 +185,6 @@ Provide tools for developers to integrate their own games into the Arcade Time e
 
 # Team
 
-Tan Zhi Wei – Full Stack Developer
-[LinkedIn](https://www.linkedin.com/in/tanzhiwei0328/)
+Tan Zhi Wei 
+– Full Stack Developer
+- [LinkedIn](https://www.linkedin.com/in/tanzhiwei0328/)
