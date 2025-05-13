@@ -66,6 +66,8 @@ Wallet Integration:
 Solana Libraries:
 @solana/web3.js
 @solana/spl-token
+
+
 📂 Important Code Directories
 
 ![System File Structure](/public/systemfile.png)
