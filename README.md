@@ -152,29 +152,38 @@ npm run create-token – Create new SPL token
 # How We Are Different
 
 Most gaming platforms isolate each game’s economy, locking players’ progress and purchases within a single title. Arcade Time breaks that barrier by introducing:
+
 🔁 Asset and Progress Continuity
+
 Game assets and player experience move across games, ensuring nothing is lost when switching titles.
+
 🧠 Skill Recognition Across Games
+
 If you're skilled in one game, the platform recognizes it in another — adapting your starting state accordingly.
+
 🪙 Flexible Game Economies
+
 Each game has its own token but exists within a unified economy, allowing cross-game and SOL interaction.
+
 📦 Legacy Support
+
 Even if a game is removed from the platform, your assets still hold value through our legacy token mechanism.
 
 # Future Plans
 
-🕹️ Add More Games
+🕹️ Add More Games:
 Expand the Arcade Time library with more retro and indie titles.
-🏆 Cross-Game Leaderboards
+
+🏆 Cross-Game Leaderboards:
 Introduce global and game-specific leaderboards to reward top players across the platform.
-📱 Mobile Platform Integration
+
+📱 Mobile Platform Integration:
 Bring Arcade Time to mobile devices for on-the-go play and asset management.
-🎨 NFT-Based Skins & Assets
-Enable unique, ownable skins and items powered by NFT technology for trading and customization.
-⚙️ Developer SDK & Game Onboarding
+
+⚙️ Developer SDK & Game Onboarding:
 Provide tools for developers to integrate their own games into the Arcade Time ecosystem.
 
 # Team
 
 Tan Zhi Wei – Full Stack Developer
-
+[LinkedIn](https://www.linkedin.com/in/tanzhiwei0328/)
