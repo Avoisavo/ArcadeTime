@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import type { Metadata } from "next";
+
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
