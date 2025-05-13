@@ -56,15 +56,25 @@ Arcade Time is built on the Solana blockchain with wallet-based authentication a
 # Tech Stack Overview
 
 Frontend: Next.js 15
+
 Language: TypeScript
+
 Blockchain: Solana
+
 UI: Tailwind CSS
+
 Wallet Integration:
+
 @solana/wallet-adapter-react
+
 @solana/wallet-adapter-react-ui
+
 @solana/wallet-adapter-wallets
+
 Solana Libraries:
+
 @solana/web3.js
+
 @solana/spl-token
 
 
