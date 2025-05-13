@@ -47,6 +47,10 @@ Users lacking game tokens can swap SOL to arcade tokens to purchase assets
 
 #System Architecture Overview
 
+![System File Structure](/public/systemarchitecture.png)
+*Figure 1: Arcade Time system arcitecture*
+
+
 Arcade Time is built on the Solana blockchain with wallet-based authentication and decentralized token storage. Upon connecting their wallet, users can play games, earn game-specific tokens, and receive in-game asset drops, which are either minted to their wallet or stored for later use. These tokens can be swapped via an exchange system, and a P2P marketplace enables the trading of game assets and inventory. The architecture supports seamless token flow, enabling a full play-to-earn experience with asset portability and legacy support.
 
 # Tech Stack Overview
@@ -63,6 +67,10 @@ Solana Libraries:
 @solana/web3.js
 @solana/spl-token
 📂 Important Code Directories
+
+![System File Structure](/public/systemfile.png)
+
+*Figure 2: Arcade Time directory structure overview*
 
 
 
@@ -135,6 +143,3 @@ NFT-based asset skins
 
 Tan Zhi Wei – Full Stack Developer
 
-![System File Structure](/public/systemfile.png)
-
-*Figure: Project directory structure overview*
