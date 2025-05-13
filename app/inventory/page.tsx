@@ -6,6 +6,27 @@ import SwapAssets from '@/components/swapassets';
 
 const InventoryPage = () => {
   const [isSwapModalOpen, setIsSwapModalOpen] = useState(false);
+  // Track which game icon is shown for each asset
+  const [assetGameIcons, setAssetGameIcons] = useState(() => {
+    // Initialize from localStorage if available, otherwise use default
+    const savedIcons = typeof window !== 'undefined' ? localStorage.getItem('assetGameIcons') : null;
+    return savedIcons ? JSON.parse(savedIcons) : {
+      stickman: '/arcade/stick-man.png',
+      poison: '/arcade/galaga.png',
+      shield: '/arcade/galaga.png',
+    };
+  });
+
+  // Called when swap is performed in SwapAssets
+  const handleSwap = () => {
+    const newIcons = {
+      ...assetGameIcons,
+      stickman: '/arcade/space-invaders.png',
+    };
+    setAssetGameIcons(newIcons);
+    // Save to localStorage
+    localStorage.setItem('assetGameIcons', JSON.stringify(newIcons));
+  };
 
   return (
     <div className="min-h-screen bg-black font-arcade">
@@ -25,22 +46,24 @@ const InventoryPage = () => {
         <div className="mb-12">
           <h2 className="text-2xl font-bold text-white mb-6 arcade-glow">Power</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow">
+            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow relative">
+              <img src={assetGameIcons.stickman} alt="Stickman Game" className="absolute top-2 left-2 w-8 h-8" />
               <div className="flex flex-col items-center">
                 <img 
-                  src="/inventory/stickman.png" 
+                  src="/inventory/obamastick.png" 
                   alt="stickman" 
                   className="w-20 h-20 mb-2 arcade-motion" 
                   draggable
                   onDragStart={e => {
-                    e.dataTransfer.setData('application/json', JSON.stringify({ name: 'stickman', img: '/inventory/stickman.png' }));
+                    e.dataTransfer.setData('application/json', JSON.stringify({ name: 'stickman', img: '/inventory/obamastick.png' }));
                   }}
                 />
                 <span className="text-purple-300 mb-2">Stickman boi</span>
                 <span className="text-white font-mono">2</span>
               </div>
             </div>
-            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow">
+            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow relative">
+              <img src="/arcade/galaga.png" alt="galaga Game" className="absolute top-2 left-2 w-8 h-8" />
               <div className="flex flex-col items-center">
                 <img 
                   src="/inventory/poison.png" 
@@ -55,7 +78,8 @@ const InventoryPage = () => {
                 <span className="text-white font-mono">3</span>
               </div>
             </div>
-            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow">
+            <div className="bg-gray-900 rounded-xl p-6 border-2 border-purple-500 arcade-border-glow relative">
+              <img src="/arcade/stick-man.png" alt="Stickman Game" className="absolute top-2 left-2 w-8 h-8" />
               <div className="flex flex-col items-center">
                 <img 
                   src="/inventory/sheild.png" 
@@ -92,7 +116,7 @@ const InventoryPage = () => {
           </div>
         </div>
       </main>
-      <SwapAssets open={isSwapModalOpen} onClose={() => setIsSwapModalOpen(false)} />
+      <SwapAssets open={isSwapModalOpen} onClose={() => setIsSwapModalOpen(false)} onSwap={handleSwap} />
       <style jsx global>{`
         @font-face {
           font-family: 'Press Start 2P';

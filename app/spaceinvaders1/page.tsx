@@ -203,6 +203,11 @@ export default function SpaceInvaders() {
     // Game loop
     let animationFrameId: number;
 
+    const bulletImg = new window.Image();
+    bulletImg.src = '/inventory/obamastick.png';
+    let bulletImgLoaded = false;
+    bulletImg.onload = () => { bulletImgLoaded = true; };
+
     const render = () => {
       if (!gameStarted) {
         // Draw title screen
@@ -542,13 +547,13 @@ export default function SpaceInvaders() {
       }
       
       // Draw player bullets
-      ctx.fillStyle = '#2563eb'; // blue-500
       for (const bullet of bulletsRef.current) {
-        // Bullet with glow effect
-        ctx.shadowColor = '#38bdf8';
-        ctx.shadowBlur = 8;
-        ctx.fillRect(bullet.x, bullet.y, 4, 10);
-        ctx.shadowBlur = 0;
+        if (bulletImgLoaded) {
+          ctx.drawImage(bulletImg, bullet.x, bullet.y, 72, 84);
+        } else {
+          ctx.fillStyle = '#2563eb';
+          ctx.fillRect(bullet.x, bullet.y, 4, 10);
+        }
       }
       
       // Draw enemy bullets

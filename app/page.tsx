@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import type { Metadata } from "next";
+
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
@@ -79,7 +81,7 @@ export default function Home() {
         {/* Game instructions */}
         <div className="mt-16 text-center">
           <p className="text-white pixel-font text-sm md:text-base animate-blink">
-            PRESS SPACE TO START
+            GOOD LUCK HAVE FUN
           </p>
         </div>
         

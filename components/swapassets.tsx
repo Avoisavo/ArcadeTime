@@ -3,9 +3,10 @@ import React, { useRef, useState } from 'react';
 interface SwapAssetsProps {
   open: boolean;
   onClose: () => void;
+  onSwap?: () => void;
 }
 
-const SwapAssets: React.FC<SwapAssetsProps> = ({ open, onClose }) => {
+const SwapAssets: React.FC<SwapAssetsProps> = ({ open, onClose, onSwap }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -19,6 +20,7 @@ const SwapAssets: React.FC<SwapAssetsProps> = ({ open, onClose }) => {
   ];
   const [selectedGame, setSelectedGame] = useState<{ name: string; img: string } | null>(null);
   const [showGameOptions, setShowGameOptions] = useState(false);
+  const [swapSuccess, setSwapSuccess] = useState(false);
 
   const onMouseDown = (e: React.MouseEvent) => {
     setDragging(true);
@@ -185,9 +187,21 @@ const SwapAssets: React.FC<SwapAssetsProps> = ({ open, onClose }) => {
               )}
             </div>
           </div>
-          <div className="border-2 border-purple-500 w-full h-20 flex items-center justify-center bg-gray-900/50 rounded-lg arcade-border-glow">
-            <span className="text-xl text-purple-300 arcade-glow">AVAILABLE ASSETS</span>
-          </div>
+          {swapSuccess && (
+            <div className="mb-4 text-green-400 text-center font-bold text-lg">
+              Swap successful! Your asset is now swapped to Space Invaders.
+            </div>
+          )}
+          <button
+            className="border-2 border-purple-500 w-full h-20 flex items-center justify-center bg-gray-900/50 rounded-lg arcade-border-glow text-xl text-purple-300 arcade-glow transition hover:bg-purple-700/30 focus:outline-none"
+            type="button"
+            onClick={() => {
+              if (onSwap) onSwap();
+              setSwapSuccess(true);
+            }}
+          >
+            Swap
+          </button>
         </div>
       </div>
     </div>
