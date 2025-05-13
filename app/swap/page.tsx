@@ -94,13 +94,13 @@ export default function SwapPage() {
     }
 
     if (!amount || Number(amount) !== 1) {
-      setMessage('Please enter 1 as the amount to transfer.');
+      setMessage('Please enter 1 as the amount to swap.');
       return;
     }
 
     try {
       setSwapping(true);
-      setMessage('Processing transfer...');
+      setMessage('Processing swap...');
 
       // Create transaction
       const transaction = new Transaction();
@@ -142,11 +142,11 @@ export default function SwapPage() {
 
       setTokenAccountExists(true);
       setTransactionHash(signature);
-      setMessage(`Transfer complete! You received 1 Space Token.`);
-      setAmount(''); // Clear the input after successful transfer
+      setMessage(`Swap complete! You received 1 Space Token.`);
+      setAmount(''); // Clear the input after successful swap
     } catch (error: any) {
-      console.error('Error during transfer:', error);
-      let errorMessage = 'Error during transfer. Please try again.';
+      console.error('Error during swap:', error);
+      let errorMessage = 'Error during swap. Please try again.';
       
       if (error?.message?.includes('429') || 
           error?.message?.includes('Too Many Requests') ||
@@ -174,10 +174,10 @@ export default function SwapPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black font-arcade arcade-bg flex flex-col items-center justify-center p-4">
       <div className="flex flex-col items-center w-full">
-        <h2 className="text-4xl font-extrabold mb-8 text-white text-center arcade-text-shadow animate-pulse uppercase tracking-widest">Token Transfer</h2>
+        <h2 className="text-4xl font-extrabold mb-8 text-white text-center arcade-text-shadow animate-pulse uppercase tracking-widest">Token Swap</h2>
         <div className="w-full bg-gradient-to-br from-gray-900 via-black to-gray-950 rounded-2xl p-8 shadow-2xl border-2 border-purple-500 arcade-border-glow relative arcade-card-glow" style={{maxWidth: 400, minWidth: 320}}>
           <div className="mb-6">
-            <label className="block text-purple-300 text-xs mb-2 tracking-widest uppercase arcade-glow">Transfer</label>
+            <label className="block text-purple-300 text-xs mb-2 tracking-widest uppercase arcade-glow">Swap</label>
             <div className="flex flex-col space-y-2">
               <div className="flex items-center bg-gray-900 rounded px-4 py-3 border border-purple-700/40 arcade-inner-glow hover:scale-105 transition-transform">
                 <select
@@ -235,7 +235,7 @@ export default function SwapPage() {
             disabled={swapping || !amount || Number(amount) <= 0 || !wallet.publicKey}
             className="w-full py-4 mt-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white font-extrabold text-xl shadow-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 arcade-glow tracking-widest uppercase disabled:opacity-50 disabled:cursor-not-allowed arcade-btn"
           >
-            {swapping ? 'Processing...' : 'Transfer'}
+            {swapping ? 'Processing...' : 'Swap'}
           </button>
           {message && (
             <div className="mt-6 text-center text-purple-300 arcade-glow text-lg">
