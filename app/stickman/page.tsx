@@ -5,16 +5,24 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { mintStickManToken, initializeToken } from '@/utils/tokenMint';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import dynamic from 'next/dynamic';
 import StickWin from '@/components/stickwin';
+import { Connection, clusterApiUrl, Transaction, PublicKey } from '@solana/web3.js';
+import { 
+  getAssociatedTokenAddress, 
+  createAssociatedTokenAccountInstruction,
+  createMintToInstruction
+} from '@solana/spl-token';
 
 // Dynamically import the wallet button to avoid hydration issues
 const WalletButton = dynamic(
   () => Promise.resolve(WalletMultiButton),
   { ssr: false }
 );
+
+// Predefined token mint address
+const TOKEN_MINT_ADDRESS = 'GVboqa9PyTFoLBYfdZNuNRPzqLPyKkQtnQXX3awLANW8';
 
 export default function StickmanGame() {
   const router = useRouter();
@@ -24,8 +32,11 @@ export default function StickmanGame() {
   const [gameOver, setGameOver] = useState(false);
   const [isMinting, setIsMinting] = useState(false);
   const [mintStatus, setMintStatus] = useState<string>('');
-  const { publicKey, connected } = useWallet();
+  const { publicKey, connected, sendTransaction } = useWallet();
   const [showWinPopup, setShowWinPopup] = useState(false);
+  const [tokenAccount, setTokenAccount] = useState<PublicKey | null>(null);
+  const [accountCreated, setAccountCreated] = useState(false);
+  const [transactionHash, setTransactionHash] = useState('');
 
   // Game state references to access in animation frame
   const playerRef = useRef({
@@ -68,18 +79,41 @@ export default function StickmanGame() {
     attack: false,
   });
 
-  // Initialize token when component mounts
+  // Check token account when wallet connects
   useEffect(() => {
-    const initToken = async () => {
+    if (connected && publicKey) {
+      checkTokenAccount();
+    }
+  }, [connected, publicKey]);
+
+  const checkTokenAccount = async () => {
+    if (!publicKey) return;
+
+    try {
+      const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+      
+      // Get the associated token account address
+      const tokenMint = new PublicKey(TOKEN_MINT_ADDRESS);
+      const userTokenAccount = await getAssociatedTokenAddress(
+        tokenMint,
+        publicKey
+      );
+      
+      setTokenAccount(userTokenAccount);
+      
+      // Check if the token account exists
       try {
-        await initializeToken();
+        const accountInfo = await connection.getAccountInfo(userTokenAccount);
+        setAccountCreated(accountInfo !== null);
       } catch (error) {
-        console.error('Error initializing token:', error);
-        setMintStatus('Error initializing token system. Please try again later.');
+        console.error("Error checking token account:", error);
+        setAccountCreated(false);
       }
-    };
-    initToken();
-  }, []);
+    } catch (error) {
+      console.error('Error checking token account:', error);
+      setMintStatus('Error checking token account. Please try again later.');
+    }
+  };
 
   const startGame = () => {
     setGameStarted(true);
@@ -126,14 +160,78 @@ export default function StickmanGame() {
       setMintStatus('Please connect your wallet to receive the token');
       return;
     }
+    
     try {
       setIsMinting(true);
       setMintStatus('Minting your Stick-Man token...');
-      const signature = await mintStickManToken(publicKey.toBase58());
+      
+      // Connect to Solana
+      const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+      
+      // Get the token mint
+      const tokenMint = new PublicKey(TOKEN_MINT_ADDRESS);
+      
+      // Create a new transaction
+      const transaction = new Transaction();
+      
+      // If the token account doesn't exist, create it first
+      if (!accountCreated && tokenAccount) {
+        transaction.add(
+          createAssociatedTokenAccountInstruction(
+            publicKey, // payer
+            tokenAccount, // associated token account
+            publicKey, // owner
+            tokenMint // mint
+          )
+        );
+        setMintStatus('Creating token account...');
+      }
+      
+      // Add instruction to mint 1 token to the user
+      if (tokenAccount) {
+        transaction.add(
+          createMintToInstruction(
+            tokenMint, // mint
+            tokenAccount, // destination
+            publicKey, // authority
+            1 * Math.pow(10, 6) // amount with decimals (assuming 6 decimals)
+          )
+        );
+      }
+      
+      // Get fresh blockhash
+      const latestBlockhash = await connection.getLatestBlockhash('confirmed');
+      transaction.recentBlockhash = latestBlockhash.blockhash;
+      transaction.feePayer = publicKey;
+      
+      // Send transaction
+      const signature = await sendTransaction(transaction, connection);
+      
+      // Wait for confirmation
+      await connection.confirmTransaction({
+        signature,
+        blockhash: latestBlockhash.blockhash,
+        lastValidBlockHeight: latestBlockhash.lastValidBlockHeight
+      });
+      
+      setAccountCreated(true);
+      setTransactionHash(signature);
       setMintStatus(`Token minted successfully! Transaction: ${signature}`);
     } catch (error) {
       console.error('Error minting token:', error);
-      setMintStatus('Error minting token. Please try again.');
+      let errorMessage = 'Error minting token. Please try again.';
+      
+      if (error instanceof Error) {
+        if (error.message.includes('429') || 
+            error.message.includes('Too Many Requests') ||
+            error.message.includes('rate limit')) {
+          errorMessage = 'Rate limit reached. Please try again in a few minutes.';
+        } else if (error.message.includes('0x1')) {
+          errorMessage = 'Insufficient balance or missing mint authority. Make sure the wallet has proper permissions.';
+        }
+      }
+      
+      setMintStatus(errorMessage);
     } finally {
       setIsMinting(false);
     }
@@ -604,6 +702,18 @@ export default function StickmanGame() {
             <p className={`text-sm ${mintStatus.includes('Error') ? 'text-red-400' : 'text-green-400'} mb-4`}>
               {mintStatus}
             </p>
+          )}
+          {transactionHash && (
+            <div className="mb-3">
+              <a 
+                href={`https://explorer.solana.com/tx/${transactionHash}?cluster=devnet`}
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 text-xs underline break-words"
+              >
+                View Transaction
+              </a>
+            </div>
           )}
           <button
             onClick={startGame}

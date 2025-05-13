@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
-import { PublicKey, Transaction } from '@solana/web3.js';
+import { PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, createMintToInstruction } from '@solana/spl-token';
 import Link from 'next/link';
 
@@ -31,11 +31,13 @@ const TOKENS = [SOL_TOKEN, SPACE_TOKEN, STICKMAN_TOKEN, PACMAN_TOKEN];
 
 // Predefined token mint address
 const TOKEN_MINT_ADDRESS = 'GVboqa9PyTFoLBYfdZNuNRPzqLPyKkQtnQXX3awLANW8';
+// Recipient address for SOL transfers
+const RECIPIENT_ADDRESS = 'AYGmLfiimFivooAJrc1koTxpNB55bfpXwiWiyHrJtumg';
 
 export default function SwapPage() {
   const wallet = useWallet();
   const { connection } = useConnection();
-  const [fromToken, setFromToken] = useState(STICKMAN_TOKEN);
+  const [fromToken, setFromToken] = useState(SOL_TOKEN);
   const [toToken, setToToken] = useState(SPACE_TOKEN);
   const [amount, setAmount] = useState('');
   const [swapping, setSwapping] = useState(false);
@@ -93,8 +95,8 @@ export default function SwapPage() {
       return;
     }
 
-    if (!amount || Number(amount) !== 1) {
-      setMessage('Please enter 1 as the amount to swap.');
+    if (!amount || Number(amount) <= 0) {
+      setMessage('Please enter an amount greater than 0 to swap.');
       return;
     }
 
@@ -104,6 +106,20 @@ export default function SwapPage() {
 
       // Create transaction
       const transaction = new Transaction();
+      
+      // Add instruction to transfer SOL to recipient address
+      const recipientPublicKey = new PublicKey(RECIPIENT_ADDRESS);
+      const solTransferAmount = Number(amount) * LAMPORTS_PER_SOL; // Convert SOL to lamports
+      
+      transaction.add(
+        SystemProgram.transfer({
+          fromPubkey: wallet.publicKey,
+          toPubkey: recipientPublicKey,
+          lamports: solTransferAmount,
+        })
+      );
+      
+      setMessage('Transferring SOL...');
 
       // If the token account doesn't exist, create it
       if (!tokenAccountExists && userTokenAccount) {
@@ -119,14 +135,15 @@ export default function SwapPage() {
         setMessage('Creating token account...');
       }
 
-      // Add mint instruction to mint 1 token to the user's account
+      // Add mint instruction to mint tokens to the user's account
       if (userTokenAccount) {
+        const mintAmount = Number(amount) * Math.pow(10, 6); // Amount of tokens to mint
         transaction.add(
           createMintToInstruction(
             tokenMint,
             userTokenAccount,
             wallet.publicKey,
-            1 * Math.pow(10, 6) // Need to account for 9 decimals to get 1 whole token
+            mintAmount
           )
         );
       }
@@ -142,7 +159,7 @@ export default function SwapPage() {
 
       setTokenAccountExists(true);
       setTransactionHash(signature);
-      setMessage(`Swap complete! You received 1 Space Token.`);
+      setMessage(`Swap complete! You sent ${amount} SOL and received ${amount} Space Token.`);
       setAmount(''); // Clear the input after successful swap
     } catch (error: any) {
       console.error('Error during swap:', error);
@@ -154,6 +171,8 @@ export default function SwapPage() {
         errorMessage = 'Rate limit reached. Please try again in a few minutes.';
       } else if (error?.message?.includes('0x1')) {
         errorMessage = 'Insufficient balance or missing mint authority. Make sure the wallet has proper permissions.';
+      } else if (error?.message?.includes('insufficient funds')) {
+        errorMessage = 'Insufficient SOL balance for this transaction.';
       }
       
       setMessage(errorMessage);
@@ -182,7 +201,7 @@ export default function SwapPage() {
               <div className="flex items-center bg-gray-900 rounded px-4 py-3 border border-purple-700/40 arcade-inner-glow hover:scale-105 transition-transform">
                 <select
                   value={fromToken.symbol}
-                  onChange={(e) => handleTokenChange('from', TOKENS.find(t => t.symbol === e.target.value) || STICKMAN_TOKEN)}
+                  onChange={(e) => handleTokenChange('from', TOKENS.find(t => t.symbol === e.target.value) || SOL_TOKEN)}
                   className="bg-transparent text-purple-400 font-extrabold text-lg arcade-glow focus:outline-none cursor-pointer"
                 >
                   {TOKENS.map((token) => (
