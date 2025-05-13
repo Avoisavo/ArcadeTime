@@ -81,7 +81,7 @@ export default function Home() {
         {/* Game instructions */}
         <div className="mt-16 text-center">
           <p className="text-white pixel-font text-sm md:text-base animate-blink">
-            PRESS SPACE TO START
+            GOOD LUCK HAVE FUN
           </p>
         </div>
         
