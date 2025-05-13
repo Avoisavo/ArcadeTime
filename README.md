@@ -13,7 +13,7 @@ This project was inspired by our own gaming experiences. We were passionate Valo
 That frustration sparked the idea for Arcade Time — a platform where digital assets and in-game currencies can move freely across multiple games within the same ecosystem. With a unified token used across all games, players don't have to worry about their money being locked into a single title. Assets are also transferable — and when they move, the player's in-game status moves too. For example, if someone is a pro in one game, switching their assets to another will reflect that experience, instantly recognizing them as a skilled player.
 In short, the desire for continuity, recognition, and retained value across games became the core inspiration behind Arcade Time.
 
-# The Problem
+# The Problem:
 
 In traditional gaming ecosystems, assets and currencies are confined to individual games. Players can't transfer skins, achievements, or in-game items to other titles — once they move on to a new game, their previous investments become useless or forgotten.
 
