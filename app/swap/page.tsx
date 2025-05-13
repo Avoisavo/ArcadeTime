@@ -2,10 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
-import { PublicKey, Transaction, SystemProgram } from '@solana/web3.js';
-import { getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, createTransferInstruction } from '@solana/spl-token';
-import { mintStickManToken } from '@/utils/tokenMint';
-import { initializeSpaceToken } from '@/utils/spaceTokenMint';
+import { PublicKey, Transaction } from '@solana/web3.js';
+import { getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, createMintToInstruction } from '@solana/spl-token';
 import Link from 'next/link';
 
 const SPACE_TOKEN = {
@@ -31,40 +29,72 @@ const SOL_TOKEN = {
 
 const TOKENS = [SOL_TOKEN, SPACE_TOKEN, STICKMAN_TOKEN, PACMAN_TOKEN];
 
-const RECIPIENT_ADDRESS = '9zCCYVxpYYUiA9EvBPUcKPDGCquEE1JKNA8jcybfdkkc';
+// Predefined token mint address
+const TOKEN_MINT_ADDRESS = 'GVboqa9PyTFoLBYfdZNuNRPzqLPyKkQtnQXX3awLANW8';
 
 export default function SwapPage() {
   const wallet = useWallet();
   const { connection } = useConnection();
-  const [fromToken, setFromToken] = useState(SOL_TOKEN);
+  const [fromToken, setFromToken] = useState(STICKMAN_TOKEN);
   const [toToken, setToToken] = useState(SPACE_TOKEN);
   const [amount, setAmount] = useState('');
   const [swapping, setSwapping] = useState(false);
   const [message, setMessage] = useState('');
-  const [spaceTokenMint, setSpaceTokenMint] = useState<PublicKey | null>(null);
+  const [tokenMint, setTokenMint] = useState<PublicKey | null>(null);
+  const [userTokenAccount, setUserTokenAccount] = useState<PublicKey | null>(null);
+  const [tokenAccountExists, setTokenAccountExists] = useState(false);
+  const [transactionHash, setTransactionHash] = useState('');
 
   useEffect(() => {
     const initializeTokens = async () => {
       try {
-        const spaceMint = await initializeSpaceToken();
-        setSpaceTokenMint(spaceMint);
+        if (wallet.publicKey) {
+          // Set the token mint
+          const mintPublicKey = new PublicKey(TOKEN_MINT_ADDRESS);
+          setTokenMint(mintPublicKey);
+          
+          // Get the associated token account for the user
+          const tokenAccount = await getAssociatedTokenAddress(
+            mintPublicKey,
+            wallet.publicKey
+          );
+          setUserTokenAccount(tokenAccount);
+          
+          // Check if the token account already exists
+          try {
+            const accountInfo = await connection.getAccountInfo(tokenAccount);
+            setTokenAccountExists(accountInfo !== null);
+          } catch (error) {
+            console.error("Error checking token account:", error);
+            setTokenAccountExists(false);
+          }
+        }
       } catch (error) {
         console.error('Error initializing tokens:', error);
         setMessage('Error initializing tokens. Please try again.');
       }
     };
 
-    initializeTokens();
-  }, []);
+    if (wallet.publicKey) {
+      initializeTokens();
+    }
+  }, [wallet.publicKey, connection]);
+
+  const truncateHash = (hash: string) => {
+    if (hash.length > 16) {
+      return hash.substring(0, 8) + '...' + hash.substring(hash.length - 8);
+    }
+    return hash;
+  };
 
   const handleSwap = async () => {
-    if (!wallet.publicKey || !spaceTokenMint) {
+    if (!wallet.publicKey || !tokenMint) {
       setMessage('Please connect your wallet and ensure tokens are initialized.');
       return;
     }
 
-    if (!amount || Number(amount) <= 0) {
-      setMessage('Please enter a valid amount.');
+    if (!amount || Number(amount) !== 1) {
+      setMessage('Please enter 1 as the amount to transfer.');
       return;
     }
 
@@ -72,44 +102,34 @@ export default function SwapPage() {
       setSwapping(true);
       setMessage('Processing transfer...');
 
-      // Get the associated token accounts
-      const fromTokenAccount = await getAssociatedTokenAddress(
-        spaceTokenMint,
-        wallet.publicKey
-      );
-
-      const recipientPublicKey = new PublicKey(RECIPIENT_ADDRESS);
-      const recipientTokenAccount = await getAssociatedTokenAddress(
-        spaceTokenMint,
-        recipientPublicKey
-      );
-
       // Create transaction
       const transaction = new Transaction();
 
-      // Check if recipient token account exists, if not create it
-      try {
-        await connection.getAccountInfo(recipientTokenAccount);
-      } catch {
+      // If the token account doesn't exist, create it
+      if (!tokenAccountExists && userTokenAccount) {
         transaction.add(
           createAssociatedTokenAccountInstruction(
             wallet.publicKey,
-            recipientTokenAccount,
-            recipientPublicKey,
-            spaceTokenMint
+            userTokenAccount,
+            wallet.publicKey,
+            tokenMint
+          )
+        );
+        
+        setMessage('Creating token account...');
+      }
+
+      // Add mint instruction to mint 1 token to the user's account
+      if (userTokenAccount) {
+        transaction.add(
+          createMintToInstruction(
+            tokenMint,
+            userTokenAccount,
+            wallet.publicKey,
+            1 * Math.pow(10, 6) // Need to account for 9 decimals to get 1 whole token
           )
         );
       }
-
-      // Add transfer instruction
-      transaction.add(
-        createTransferInstruction(
-          fromTokenAccount,
-          recipientTokenAccount,
-          wallet.publicKey,
-          Number(amount) * Math.pow(10, 9) // Assuming 9 decimals
-        )
-      );
 
       // Send transaction
       const signature = await wallet.sendTransaction(transaction, connection);
@@ -120,15 +140,9 @@ export default function SwapPage() {
         lastValidBlockHeight: latestBlockhash.lastValidBlockHeight
       });
 
-      // After successful transfer, mint STICKMAN tokens
-      const mintSignature = await mintStickManToken(wallet.publicKey.toString());
-      await connection.confirmTransaction({
-        signature: mintSignature,
-        blockhash: latestBlockhash.blockhash,
-        lastValidBlockHeight: latestBlockhash.lastValidBlockHeight
-      });
-
-      setMessage(`Transfer complete! Transaction: ${signature}`);
+      setTokenAccountExists(true);
+      setTransactionHash(signature);
+      setMessage(`Transfer complete! You received 1 Space Token.`);
       setAmount(''); // Clear the input after successful transfer
     } catch (error: any) {
       console.error('Error during transfer:', error);
@@ -138,6 +152,8 @@ export default function SwapPage() {
           error?.message?.includes('Too Many Requests') ||
           error?.message?.includes('rate limit')) {
         errorMessage = 'Rate limit reached. Please try again in a few minutes.';
+      } else if (error?.message?.includes('0x1')) {
+        errorMessage = 'Insufficient balance or missing mint authority. Make sure the wallet has proper permissions.';
       }
       
       setMessage(errorMessage);
@@ -166,7 +182,7 @@ export default function SwapPage() {
               <div className="flex items-center bg-gray-900 rounded px-4 py-3 border border-purple-700/40 arcade-inner-glow hover:scale-105 transition-transform">
                 <select
                   value={fromToken.symbol}
-                  onChange={(e) => handleTokenChange('from', TOKENS.find(t => t.symbol === e.target.value) || SOL_TOKEN)}
+                  onChange={(e) => handleTokenChange('from', TOKENS.find(t => t.symbol === e.target.value) || STICKMAN_TOKEN)}
                   className="bg-transparent text-purple-400 font-extrabold text-lg arcade-glow focus:outline-none cursor-pointer"
                 >
                   {TOKENS.map((token) => (
@@ -224,6 +240,18 @@ export default function SwapPage() {
           {message && (
             <div className="mt-6 text-center text-purple-300 arcade-glow text-lg">
               {message}
+              {transactionHash && (
+                <div className="mt-2">
+                  <a 
+                    href={`https://explorer.solana.com/tx/${transactionHash}?cluster=devnet`}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:text-blue-300 text-sm underline break-words inline-block"
+                  >
+                    {truncateHash(transactionHash)}
+                  </a>
+                </div>
+              )}
             </div>
           )}
           <div className="absolute -inset-0.5 rounded-2xl pointer-events-none arcade-animated-border"></div>
