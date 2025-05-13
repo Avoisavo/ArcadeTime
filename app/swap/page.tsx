@@ -5,7 +5,6 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey, Transaction, SystemProgram } from '@solana/web3.js';
 import { getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, createTransferInstruction } from '@solana/spl-token';
 import { mintStickManToken } from '@/utils/tokenMint';
-import { initializeSpaceToken } from '@/utils/spaceTokenMint';
 import Link from 'next/link';
 
 const SPACE_TOKEN = {
@@ -42,20 +41,6 @@ export default function SwapPage() {
   const [swapping, setSwapping] = useState(false);
   const [message, setMessage] = useState('');
   const [spaceTokenMint, setSpaceTokenMint] = useState<PublicKey | null>(null);
-
-  useEffect(() => {
-    const initializeTokens = async () => {
-      try {
-        const spaceMint = await initializeSpaceToken();
-        setSpaceTokenMint(spaceMint);
-      } catch (error) {
-        console.error('Error initializing tokens:', error);
-        setMessage('Error initializing tokens. Please try again.');
-      }
-    };
-
-    initializeTokens();
-  }, []);
 
   const handleSwap = async () => {
     if (!wallet.publicKey || !spaceTokenMint) {

@@ -3,15 +3,12 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { mintStickManToken, initializeToken } from '@/utils/tokenMint';
 
 export default function StickmanGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [score, setScore] = useState(0);
   const [gameStarted, setGameStarted] = useState(true);
   const [gameOver, setGameOver] = useState(false);
-  const [isMinting, setIsMinting] = useState(false);
-  const [mintStatus, setMintStatus] = useState<string>('');
   const { publicKey, connected } = useWallet();
 
   // Game state references to access in animation frame
@@ -54,20 +51,6 @@ export default function StickmanGame() {
     up: false,
     attack: false,
   });
-
-  // Initialize token when component mounts
-  useEffect(() => {
-    const initToken = async () => {
-      try {
-        await initializeToken();
-      } catch (error) {
-        console.error('Error initializing token:', error);
-        setMintStatus('Error initializing token system. Please try again later.');
-      }
-    };
-
-    initToken();
-  }, []);
 
   // Initialize game state when component mounts
   useEffect(() => {
@@ -144,25 +127,6 @@ export default function StickmanGame() {
     };
   };
 
-  const handleWin = async () => {
-    if (!connected || !publicKey) {
-      setMintStatus('Please connect your wallet to receive the token');
-      return;
-    }
-
-    try {
-      setIsMinting(true);
-      setMintStatus('Minting your Stick-Man token...');
-      const signature = await mintStickManToken(publicKey.toBase58());
-      setMintStatus(`Token minted successfully! Transaction: ${signature}`);
-    } catch (error) {
-      console.error('Error minting token:', error);
-      setMintStatus('Error minting token. Please try again.');
-    } finally {
-      setIsMinting(false);
-    }
-  };
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -219,6 +183,14 @@ export default function StickmanGame() {
     let backgroundLoaded = false;
     backgroundImage.onload = () => {
       backgroundLoaded = true;
+    };
+
+    // Load Obama stickman image
+    const obamaStickImg = new window.Image();
+    obamaStickImg.src = '/inventory/obamastick.png';
+    let obamaStickLoaded = false;
+    obamaStickImg.onload = () => {
+      obamaStickLoaded = true;
     };
 
     // Game loop
@@ -450,7 +422,19 @@ export default function StickmanGame() {
       }
 
       // Draw player
-      drawStickman(ctx, player.x, player.y, player.direction, player.animation, player.attacking, '#ffffff');
+      if (obamaStickLoaded) {
+        ctx.save();
+        const widthScale = 3.0;
+        const heightScale = 2.5;
+        ctx.translate(
+          player.x - (player.width * widthScale - player.width) / 2,
+          player.y - 10 - (player.height * heightScale - player.height) / 2
+        );
+        ctx.drawImage(obamaStickImg, 0, 0, player.width * widthScale, player.height * heightScale);
+        ctx.restore();
+      } else {
+        drawStickman(ctx, player.x, player.y, player.direction, player.animation, player.attacking, '#ffffff');
+      }
       
       // Draw label above player
       ctx.fillStyle = '#ffffff';
@@ -557,7 +541,6 @@ export default function StickmanGame() {
       // Check for win condition
       if (enemy.health <= 0 && !gameOver) {
         setGameOver(true);
-        handleWin();
       }
 
       animationFrameId = requestAnimationFrame(render);
@@ -757,17 +740,11 @@ export default function StickmanGame() {
         <div className="mt-4 text-center">
           <h2 className="text-2xl font-bold text-white mb-2">Game Over!</h2>
           <p className="text-white mb-4">Score: {score}</p>
-          {mintStatus && (
-            <p className={`text-sm ${mintStatus.includes('Error') ? 'text-red-400' : 'text-[#00ffff]'} mb-4`}>
-              {mintStatus}
-            </p>
-          )}
           <button
             onClick={startGame}
             className="bg-gradient-to-r from-[#ff00ff] to-[#00ffff] hover:from-[#00ffff] hover:to-[#ff00ff] text-white px-6 py-2 rounded-md font-bold uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_10px_rgba(255,0,255,0.5)] hover:shadow-[0_0_15px_rgba(0,255,255,0.8)]"
-            disabled={isMinting}
           >
-            {isMinting ? 'Minting...' : 'Play Again'}
+            Play Again
           </button>
         </div>
       )}

@@ -8,6 +8,7 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { mintStickManToken, initializeToken } from '@/utils/tokenMint';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import dynamic from 'next/dynamic';
+import StickWin from '@/components/stickwin';
 
 // Dynamically import the wallet button to avoid hydration issues
 const WalletButton = dynamic(
@@ -24,6 +25,7 @@ export default function StickmanGame() {
   const [isMinting, setIsMinting] = useState(false);
   const [mintStatus, setMintStatus] = useState<string>('');
   const { publicKey, connected } = useWallet();
+  const [showWinPopup, setShowWinPopup] = useState(false);
 
   // Game state references to access in animation frame
   const playerRef = useRef({
@@ -358,6 +360,7 @@ export default function StickmanGame() {
       // Check game over
       if (player.health <= 0 || enemy.health <= 0) {
         setGameOver(true);
+        if (player.health > 0) setShowWinPopup(true);
       }
       
       // Animation frames
@@ -610,6 +613,14 @@ export default function StickmanGame() {
             {isMinting ? 'Minting...' : 'Play Again'}
           </button>
         </div>
+      )}
+
+      {showWinPopup && (
+        <StickWin onClose={() => {
+          setShowWinPopup(false);
+          setGameStarted(false);
+          setGameOver(false);
+        }} />
       )}
 
       <style jsx global>{`
