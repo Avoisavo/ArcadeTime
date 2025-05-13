@@ -6,6 +6,7 @@ Each game has a dedicated token.
 Tokens can be swapped to SOL and vice versa.
 Peer-to-peer marketplace to buy and sell game assets.
 Legacy token system for retired games, ensuring asset value continuity.
+
 💡 Inspiration: How It All Started
 
 This project was inspired by our team member Zhi Wei’s personal gaming experience. She was a passionate Valorant player who later transitioned to CS:GO, only to realize her time and money spent in Valorant could not carry over. This sparked the idea for Arcade Time — a platform where digital assets and in-game currencies can transition across multiple games within the same ecosystem.
