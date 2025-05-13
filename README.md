@@ -90,17 +90,25 @@ Solana Libraries:
 # Features
 
 🎮 Multi-Game Asset Portability
+
 Seamlessly transfer in-game assets between supported games like Tetris, Pac-Man, Stickman, Space Invaders, and Galaga.
+
 💰 Unified Token System
+
 All games share a single Arcade token, allowing for easy earning, spending, and swapping across titles.
+
 🔄 Token-to-SOL Swapping
+
 Convert earned tokens to SOL and vice versa, giving real-world value to in-game achievements.
+
 🛒 Decentralized Marketplace
+
 Buy, sell, or trade game assets directly with other players using game tokens or legacy tokens.
+
 🔐 Wallet-Based Authentication
+
 Secure user login through Phantom wallet integration.
-🧩 Legacy Token System
-Retired games are still supported with legacy tokens that preserve asset value and usage.
+
 🎯 Smart Inventory System
 Switch assets between games with an intuitive inventory system — assets auto-update in-game after switching.
 
