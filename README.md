@@ -20,7 +20,7 @@ In traditional gaming ecosystems, assets and currencies are confined to individu
 
 Arcade Time creates a unified ecosystem where game assets and in-game currencies can be transferred and reused across multiple games on the platform. This ensures that players' digital investments retain their value, offering greater flexibility, continuity, and long-term utility.
 
-#⚙ How It Works
+# How It Works
 
 👜 Wallet Connection
 Users connect their Phantom wallet to access the platform.
@@ -56,16 +56,27 @@ Arcade Time is built on the Solana blockchain with wallet-based authentication a
 # Tech Stack Overview
 
 Frontend: Next.js 15
+
 Language: TypeScript
+
 Blockchain: Solana
+
 UI: Tailwind CSS
+
 Wallet Integration:
+
 @solana/wallet-adapter-react
+
 @solana/wallet-adapter-react-ui
+
 @solana/wallet-adapter-wallets
+
 Solana Libraries:
+
 @solana/web3.js
+
 @solana/spl-token
+
 
 
 📂 Important Code Directories
