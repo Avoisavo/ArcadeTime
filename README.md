@@ -174,9 +174,7 @@ If you're skilled in one game, the platform recognizes it in another — adaptin
 
 Each game shared token and exists within a unified economy, allowing cross-game and SOL interaction.
 
-📦 Legacy Support
 
-Even if a game is removed from the platform, your assets still hold value through our legacy token mechanism.
 
 # Future Plans
 
