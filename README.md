@@ -4,7 +4,9 @@ Arcade Time is a gaming platform built on Solana, where each game features its o
 
 Key Highlights:
 Each game asstes can swap to other game that available in the platform
+
 Tokens can be swapped to SOL and vice versa.
+
 Peer-to-peer marketplace to buy and sell game assets.
 
 
@@ -47,7 +49,6 @@ Fully peer-to-peer asset trading
 Buy/sell using game tokens or legacy tokens
 Users lacking game tokens can swap SOL to arcade tokens to purchase assets
 
-#System Architecture Overview
 
 ![System File Structure](/public/systemarchitecture.png)
 *Figure 1: Arcade Time system arcitecture*
