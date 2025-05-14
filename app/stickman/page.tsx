@@ -22,7 +22,7 @@ const WalletButton = dynamic(
 );
 
 // Predefined token mint address
-const TOKEN_MINT_ADDRESS = 'GVboqa9PyTFoLBYfdZNuNRPzqLPyKkQtnQXX3awLANW8';
+const TOKEN_MINT_ADDRESS = '4oUSGe7v1vg1YxL7GgMuqk3NHB4ctAss5rDo6Tk2KxPx';
 
 export default function StickmanGame() {
   const router = useRouter();
@@ -161,6 +161,11 @@ export default function StickmanGame() {
       return;
     }
     
+    // If we're already minting, don't start another transaction
+    if (isMinting) {
+      return;
+    }
+    
     try {
       setIsMinting(true);
       setMintStatus('Minting your Stick-Man token...');
@@ -216,7 +221,7 @@ export default function StickmanGame() {
       
       setAccountCreated(true);
       setTransactionHash(signature);
-      setMintStatus(`Token minted successfully! Transaction: ${signature}`);
+      setMintStatus('Token minted successfully!');
     } catch (error) {
       console.error('Error minting token:', error);
       let errorMessage = 'Error minting token. Please try again.';
@@ -458,7 +463,11 @@ export default function StickmanGame() {
       // Check game over
       if (player.health <= 0 || enemy.health <= 0) {
         setGameOver(true);
-        if (player.health > 0) setShowWinPopup(true);
+        // Only show the win popup if player wins, and don't directly call handleWin()
+        // to avoid double transaction prompts
+        if (player.health > 0) {
+          setShowWinPopup(true);
+        }
       }
       
       // Animation frames
@@ -536,7 +545,7 @@ export default function StickmanGame() {
       // Check for win condition
       if (enemy.health <= 0 && !gameOver) {
         setGameOver(true);
-        handleWin();
+        setShowWinPopup(true);
       }
 
       animationFrameId = requestAnimationFrame(render);
@@ -698,23 +707,36 @@ export default function StickmanGame() {
         <div className="mt-4 text-center">
           <h2 className="text-2xl font-bold text-white mb-2">Game Over!</h2>
           <p className="text-white mb-4">Score: {score}</p>
-          {mintStatus && (
-            <p className={`text-sm ${mintStatus.includes('Error') ? 'text-red-400' : 'text-green-400'} mb-4`}>
+          
+          {mintStatus && !mintStatus.includes('Error') && !transactionHash && (
+            <p className="text-gray-300 mb-2 text-sm">
               {mintStatus}
             </p>
           )}
+          
+          {mintStatus && mintStatus.includes('Error') && (
+            <p className="text-red-400 mb-2 text-sm">
+              {mintStatus}
+            </p>
+          )}
+          
           {transactionHash && (
-            <div className="mb-3">
+            <div className="mb-3 text-center">
+              <p className="text-green-500 font-medium">Token minted successfully! Transaction:</p>
+              <p className="text-purple-600 break-words max-w-xs mx-auto my-1 font-medium">
+                {transactionHash}
+              </p>
               <a 
                 href={`https://explorer.solana.com/tx/${transactionHash}?cluster=devnet`}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-blue-400 hover:text-blue-300 text-xs underline break-words"
+                className="text-purple-600 hover:text-purple-700 text-xs underline"
               >
                 View Transaction
               </a>
             </div>
           )}
+          
           <button
             onClick={startGame}
             className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white px-6 py-2 rounded-md font-bold uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_10px_rgba(138,43,226,0.5)] hover:shadow-[0_0_15px_rgba(138,43,226,0.8)]"
@@ -726,11 +748,17 @@ export default function StickmanGame() {
       )}
 
       {showWinPopup && (
-        <StickWin onClose={() => {
-          setShowWinPopup(false);
-          setGameStarted(false);
-          setGameOver(false);
-        }} />
+        <StickWin 
+          onClose={() => {
+            setShowWinPopup(false);
+            setGameStarted(false);
+            setGameOver(false);
+          }} 
+          onMint={handleWin}  // Pass the mint function to the popup
+          mintStatus={mintStatus}
+          isMinting={isMinting}
+          transactionHash={transactionHash}
+        />
       )}
 
       <style jsx global>{`

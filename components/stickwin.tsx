@@ -1,6 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
-export default function StickWin({ onClose }: { onClose: () => void }) {
+export default function StickWin({ 
+  onClose, 
+  onMint, 
+  mintStatus, 
+  isMinting, 
+  transactionHash 
+}: { 
+  onClose: () => void;
+  onMint?: () => Promise<void>;
+  mintStatus?: string;
+  isMinting?: boolean;
+  transactionHash?: string;
+}) {
   const [showImage, setShowImage] = useState(false);
 
   useEffect(() => {
@@ -10,7 +22,7 @@ export default function StickWin({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-      <div className="bg-white rounded-lg shadow-lg p-8 flex flex-col items-center max-w-xs w-full relative">
+      <div className="bg-white rounded-lg shadow-lg p-8 flex flex-col items-center max-w-sm w-full relative">
         <h2 className="text-2xl font-bold text-purple-700 mb-4 text-center">You won a new asset!</h2>
         <div className="flex items-center justify-center w-40 h-40 mb-4 relative">
           {/* Centered bling background */}
@@ -25,12 +37,58 @@ export default function StickWin({ onClose }: { onClose: () => void }) {
             style={{ transformOrigin: 'center', transitionProperty: 'transform', width: '100%', height: '100%' }}
           />
         </div>
-        <button
-          onClick={onClose}
-          className="mt-4 px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-md font-bold uppercase tracking-wider hover:from-blue-600 hover:to-purple-600 transition-all"
-        >
-          Close
-        </button>
+        
+        {/* Success message and transaction hash styling to match screenshot */}
+        {transactionHash && (
+          <div className="text-center w-full px-4">
+            <p className="text-green-500 font-medium">Token minted successfully! Transaction:</p>
+            <p className="text-purple-600 break-words w-full my-1 font-medium">
+              {transactionHash}
+            </p>
+            <a 
+              href={`https://explorer.solana.com/tx/${transactionHash}?cluster=devnet`}
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-purple-600 hover:text-purple-700 text-xs underline"
+            >
+              View Transaction
+            </a>
+          </div>
+        )}
+        
+        {/* Error message */}
+        {mintStatus && mintStatus.includes('Error') && (
+          <p className="text-red-500 mt-2 mb-2 text-center text-sm">
+            {mintStatus}
+          </p>
+        )}
+        
+        {/* Status message during minting */}
+        {mintStatus && !mintStatus.includes('Error') && !transactionHash && (
+          <p className="text-gray-600 mt-2 mb-2 text-center text-sm">
+            {mintStatus}
+          </p>
+        )}
+        
+        <div className="flex flex-col space-y-3 mt-4 w-full">
+          {onMint && !transactionHash && (
+            <button
+              onClick={onMint}
+              disabled={isMinting}
+              className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-md font-bold uppercase tracking-wider hover:from-blue-600 hover:to-purple-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isMinting ? 'Minting...' : 'Mint Token'}
+            </button>
+          )}
+          
+          <button
+            onClick={onClose}
+            className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md font-bold uppercase tracking-wider hover:bg-gray-300 transition-all"
+          >
+            CLOSE
+          </button>
+        </div>
+        
         <style jsx>{`
           .scale-0 { transform: scale(0); opacity: 0; }
           .scale-100 { transform: scale(1); opacity: 1; }

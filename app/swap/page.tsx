@@ -30,7 +30,7 @@ const SOL_TOKEN = {
 const TOKENS = [SOL_TOKEN, SPACE_TOKEN, STICKMAN_TOKEN, PACMAN_TOKEN];
 
 // Predefined token mint address
-const TOKEN_MINT_ADDRESS = 'GVboqa9PyTFoLBYfdZNuNRPzqLPyKkQtnQXX3awLANW8';
+const TOKEN_MINT_ADDRESS = '4oUSGe7v1vg1YxL7GgMuqk3NHB4ctAss5rDo6Tk2KxPx';
 // Recipient address for SOL transfers
 const RECIPIENT_ADDRESS = 'AYGmLfiimFivooAJrc1koTxpNB55bfpXwiWiyHrJtumg';
 
