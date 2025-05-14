@@ -1,6 +1,6 @@
 # Arcade Time
 ![System File Structure](/public/arcadetime.png)
-Arcade Time is a gaming platform build on solana where each game has its own unique assets and a single token is shared across all games. Users can play, earn, swap, and trade tokens tied specifically to games like Tetris, Pac-Man, Stickman, Space Invaders, and Galaga.
+Arcade Time is a gaming platform built on Solana, where each game features its own unique assets, and all games share a single unified token. The token is tradable, swappable, and usable across all games. Additionally, game-specific assets can be easily transferred or swapped between games, allowing for a truly interconnected gaming experience. Users can play, earn, swap, and trade across the entire platform seamlessly.
 Key Highlights:
 Each game asstes can swap to other game that available in the platform
 Tokens can be swapped to SOL and vice versa.
