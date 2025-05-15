@@ -738,11 +738,7 @@ export default function StickmanGame() {
             setShowWinPopup(false);
             setGameStarted(false);
             setGameOver(false);
-          }} 
-          onMint={handleWin}  // Pass the mint function to the popup
-          mintStatus={mintStatus}
-          isMinting={isMinting}
-          transactionHash={transactionHash}
+          }}
         />
       )}
 
