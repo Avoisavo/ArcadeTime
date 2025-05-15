@@ -6,7 +6,6 @@ import Header from '@/components/header';
 const MarketplacePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black font-arcade arcade-bg">
-      <Header activeTab="Marketplace" />
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold mb-8 text-white arcade-text-shadow animate-pulse">Marketplace</h1>
 

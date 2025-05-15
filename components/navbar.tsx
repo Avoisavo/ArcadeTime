@@ -27,7 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({ activePage }) => {
                 }`}
               >
                 <Link href={item.path} className="w-full">
-                  <span className={`text-sm ${
+                  <span className={`text-sm arcade-pixel-font ${
                     activePage === item.name.toLowerCase() 
                       ? 'text-white font-bold arcade-text-glow' 
                       : 'text-gray-400'
@@ -35,7 +35,7 @@ const Navbar: React.FC<NavbarProps> = ({ activePage }) => {
                     {item.name}
                   </span>
                 </Link>
-                <span className={`text-xs px-2 py-1 rounded-md ${
+                <span className={`text-xs px-2 py-1 rounded-md arcade-pixel-font ${
                   activePage === item.name.toLowerCase()
                     ? 'bg-purple-600 text-white' 
                     : 'bg-gray-800 text-gray-300'
@@ -49,6 +49,20 @@ const Navbar: React.FC<NavbarProps> = ({ activePage }) => {
       </div>
 
       <style jsx global>{`
+        @font-face {
+          font-family: 'Arcade';
+          src: url('/fonts/pressstart2p-regular.woff2') format('woff2');
+          font-weight: normal;
+          font-style: normal;
+          font-display: swap;
+        }
+        
+        .arcade-pixel-font {
+          font-family: 'Arcade', 'Press Start 2P', 'Courier New', monospace;
+          letter-spacing: 0.5px;
+          text-transform: uppercase;
+        }
+        
         .arcade-sidebar {
           background-image: 
             linear-gradient(to bottom, rgba(25,25,25,1) 0%, rgba(10,10,10,1) 100%),

@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/navbar";
-import Header from "@/components/header";
 
 // Define the arcade game type
 interface ArcadeGame {
@@ -106,10 +105,9 @@ export default function Library() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-gray-900 to-black arcade-bg">
-      <Header activeTab="Games" />
       <div className="flex flex-1 relative">
         <Navbar activePage="my games" />
-        <div className="min-h-screen p-8 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)] ml-64 flex-1 overflow-y-auto">
+        <div className="min-h-screen p-8 pb-20 gap-8 sm:p-20 ml-64 flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto">
             <h1 className="text-4xl font-bold mb-8 text-white arcade-text-shadow animate-pulse">Arcade Game Library</h1>
             
@@ -275,28 +273,11 @@ export default function Library() {
         </div>
       </div>
       <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-        
         .arcade-bg {
           background-image: 
             linear-gradient(to bottom, rgba(25,25,25,1) 0%, rgba(10,10,10,1) 100%),
             url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
           background-blend-mode: multiply;
-        }
-        
-        .arcade-text-shadow {
-          text-shadow: 
-            0 0 2px #fff, 
-            0 0 5px rgba(138,43,226,0.8), 
-            0 0 10px rgba(138,43,226,0.5);
-          font-family: 'Press Start 2P', monospace;
-          letter-spacing: 2px;
-        }
-        
-        .arcade-text-glow {
-          text-shadow: 0 0 2px #fff, 0 0 5px rgba(138,43,226,0.8);
-          font-family: 'Press Start 2P', monospace;
-          letter-spacing: 1px;
         }
         
         .arcade-card-glow:hover {
@@ -308,12 +289,6 @@ export default function Library() {
         .arcade-selected-card {
           box-shadow: 0 0 20px rgba(138,43,226,0.4) !important;
           animation: selected-pulse 2s infinite;
-        }
-        
-        .arcade-game-title {
-          text-shadow: 0 0 2px #fff, 0 0 5px rgba(138,43,226,0.6);
-          font-family: 'Press Start 2P', monospace;
-          letter-spacing: 1px;
         }
         
         .arcade-game-container {
@@ -375,8 +350,6 @@ export default function Library() {
         .arcade-btn {
           position: relative;
           overflow: hidden;
-          font-family: 'Press Start 2P', monospace;
-          letter-spacing: 1px;
         }
         
         .arcade-btn::before {

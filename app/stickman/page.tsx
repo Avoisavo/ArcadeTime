@@ -4,9 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import dynamic from 'next/dynamic';
 import StickWin from '@/components/stickwin';
 import { Connection, clusterApiUrl, Transaction, PublicKey } from '@solana/web3.js';
 import { 
@@ -14,12 +12,6 @@ import {
   createAssociatedTokenAccountInstruction,
   createMintToInstruction
 } from '@solana/spl-token';
-
-// Dynamically import the wallet button to avoid hydration issues
-const WalletButton = dynamic(
-  () => Promise.resolve(WalletMultiButton),
-  { ssr: false }
-);
 
 // Predefined token mint address
 const TOKEN_MINT_ADDRESS = '4oUSGe7v1vg1YxL7GgMuqk3NHB4ctAss5rDo6Tk2KxPx';
@@ -652,13 +644,6 @@ export default function StickmanGame() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 to-black arcade-bg py-8">
-      {!connected && (
-        <div className="mb-8 text-center">
-          <p className="text-yellow-400 font-bold mb-4">Please connect your wallet to play and receive tokens</p>
-          <WalletButton className="bg-gradient-to-r from-purple-400 to-purple-600 hover:from-purple-600 hover:to-purple-400 text-white font-bold py-3 px-10 rounded-full text-xl uppercase tracking-wider transform hover:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(138,43,226,0.5)] hover:shadow-[0_0_25px_rgba(138,43,226,0.8)]" />
-        </div>
-      )}
-      
       <div className="relative">
         <canvas 
           ref={canvasRef} 
