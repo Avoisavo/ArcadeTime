@@ -50,12 +50,12 @@ const InventoryPage = () => {
               <img src={assetGameIcons.stickman} alt="Stickman Game" className="absolute top-2 left-2 w-8 h-8" />
               <div className="flex flex-col items-center">
                 <img 
-                  src="/inventory/obamastick.png" 
+                  src="/inventory/sigmastick.png" 
                   alt="stickman" 
                   className="w-20 h-20 mb-2 arcade-motion" 
                   draggable
                   onDragStart={e => {
-                    e.dataTransfer.setData('application/json', JSON.stringify({ name: 'stickman', img: '/inventory/obamastick.png' }));
+                    e.dataTransfer.setData('application/json', JSON.stringify({ name: 'stickman', img: '/inventory/sigmastick.png' }));
                   }}
                 />
                 <span className="text-purple-300 mb-2 arcade-pixel-font">Stickman boi</span>

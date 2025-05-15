@@ -187,7 +187,7 @@ export default function StickmanGame() {
 
     // Load Obama stickman image
     const obamaStickImg = new window.Image();
-    obamaStickImg.src = '/inventory/obamastick.png';
+    obamaStickImg.src = '/inventory/sigmastick.png';
     let obamaStickLoaded = false;
     obamaStickImg.onload = () => {
       obamaStickLoaded = true;

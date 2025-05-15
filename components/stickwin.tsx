@@ -31,7 +31,7 @@ export default function StickWin({
           </div>
           {/* Asset image */}
           <img
-            src="/inventory/obamastick.png"
+            src="/inventory/sigmastick.png"
             alt="New Asset"
             className={`transition-transform duration-700 ease-out z-10 relative ${showImage ? 'scale-100' : 'scale-0'}`}
             style={{ transformOrigin: 'center', transitionProperty: 'transform', width: '100%', height: '100%' }}
