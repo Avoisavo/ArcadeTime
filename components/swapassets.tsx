@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 interface SwapAssetsProps {
   open: boolean;
   onClose: () => void;
-  onSwap?: () => void;
+  onSwap?: (selectedGame: { name: string; img: string } | null) => void;
 }
 
 const SwapAssets: React.FC<SwapAssetsProps> = ({ open, onClose, onSwap }) => {
@@ -196,7 +196,7 @@ const SwapAssets: React.FC<SwapAssetsProps> = ({ open, onClose, onSwap }) => {
             className="border-2 border-purple-500 w-full h-20 flex items-center justify-center bg-gray-900/50 rounded-lg arcade-border-glow text-xl text-purple-300 arcade-glow transition hover:bg-purple-700/30 focus:outline-none"
             type="button"
             onClick={() => {
-              if (onSwap) onSwap();
+              if (onSwap) onSwap(selectedGame);
               setSwapSuccess(true);
             }}
           >

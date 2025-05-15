@@ -18,14 +18,15 @@ const InventoryPage = () => {
   });
 
   // Called when swap is performed in SwapAssets
-  const handleSwap = () => {
+  const handleSwap = (selectedGame: { name: string; img: string } | null) => {
+    if (!selectedGame) return;
     const newIcons = {
       ...assetGameIcons,
-      stickman: '/arcade/space-invaders.png',
+      stickman: selectedGame.img, // Use the selected game's image
     };
     setAssetGameIcons(newIcons);
-    // Save to localStorage
     localStorage.setItem('assetGameIcons', JSON.stringify(newIcons));
+    setIsSwapModalOpen(false); // Optionally close the modal after swap
   };
 
   return (
@@ -116,7 +117,11 @@ const InventoryPage = () => {
           </div>
         </div>
       </main>
-      <SwapAssets open={isSwapModalOpen} onClose={() => setIsSwapModalOpen(false)} onSwap={handleSwap} />
+      <SwapAssets
+        open={isSwapModalOpen}
+        onClose={() => setIsSwapModalOpen(false)}
+        onSwap={handleSwap}
+      />
       <style jsx global>{`
         @font-face {
           font-family: 'Arcade';

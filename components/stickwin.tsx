@@ -13,9 +13,24 @@ export default function StickWin({
   const [transactionHash, setTransactionHash] = useState('');
   const wallet = useWallet();
 
+  const defaultIcons = {
+    stickman: '/arcade/stick-man.png',
+    poison: '/arcade/galaga.png',
+    shield: '/arcade/galaga.png',
+  };
+
+  const [assetGameIcons, setAssetGameIcons] = useState(defaultIcons);
+
   useEffect(() => {
     const timer = setTimeout(() => setShowImage(true), 2000);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const savedIcons = localStorage.getItem('assetGameIcons');
+    if (savedIcons) {
+      setAssetGameIcons(JSON.parse(savedIcons));
+    }
   }, []);
 
   // Handler for the mint button
