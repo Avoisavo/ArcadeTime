@@ -5,22 +5,22 @@ Arcade Time is a gaming platform built on Solana, where each game features its o
 
 Key Highlights:
 
-Each game asstes can swap to other game that available in the platform
+- Each game asstes can swap to other game that available in the platform
 
-Tokens can be swapped to SOL and vice versa.
+- Tokens can be swapped to SOL and vice versa.
 
-Peer-to-peer marketplace to buy and sell game assets.
+- Peer-to-peer marketplace to buy and sell game assets.
 
 
 # Inspiration: How It All Started
 
-This project was inspired by our own gaming experiences. We were passionate Valorant players who eventually moved on to CS:GO, only to realize that everything we had invested — like expensive Phantom skins and character skins — couldn't carry over. The same frustration applied to other games too. In GTA IV, all the achievements we earned and the custom car designs we created couldn't be transferred to GTA V. We could only revisit those memories by going back to the older game.
-That frustration sparked the idea for Arcade Time — a platform where digital assets and in-game currencies can move freely across multiple games within the same ecosystem. With a unified token used across all games, players don't have to worry about their money being locked into a single title. Assets are also transferable — and when they move, the player's in-game status moves too. For example, if someone is a pro in one game, switching their assets to another will reflect that experience, instantly recognizing them as a skilled player.
+This project was inspired by our own gaming experiences. We were passionate Valorant players who eventually moved on to CS:GO, only to realize that everything we had invested like expensive skins and character skins couldn't carry over. The same frustration applied to other games too. In GTA IV, all the achievements we earned and the custom car designs we created couldn't be transferred to GTA V. We could only revisit those memories by going back to the older game.
+That frustration sparked the idea for Arcade Time, a platform where digital assets and in-game currencies can move freely across multiple games within the same ecosystem. With a unified token used across all games, players don't have to worry about their money being locked into a single title. Assets are also transferable and when they move, the player's in-game status moves too. For example, if someone is a pro in one game, switching their assets to another will reflect that experience, instantly recognizing them as a skilled player.
 In short, the desire for continuity, recognition, and retained value across games became the core inspiration behind Arcade Time.
 
 # The Problem:
 
-In traditional gaming ecosystems, assets and currencies are confined to individual games. Players can't transfer skins, achievements, or in-game items to other titles — once they move on to a new game, their previous investments become useless or forgotten.
+In traditional gaming ecosystems, assets and currencies are confined to individual games. Players can't transfer skins, achievements, or in-game items to other titles. Once they move on to a new game, their previous investments become useless or forgotten.
 
 # The Solution
 
@@ -60,27 +60,21 @@ Users can access Arcade Time by connecting their Phantom wallet. From there, the
 
 # Tech Stack Overview
 
-Frontend: Next.js 15
-
-Language: TypeScript
-
-Blockchain: Solana
-
-UI: Tailwind CSS
+- **Frontend:** Next.js 15  
+- **Language:** TypeScript  
+- **Blockchain:** Solana  
+- **UI:** Tailwind CSS  
 
 Wallet Integration:
 
-@solana/wallet-adapter-react
-
-@solana/wallet-adapter-react-ui
-
-@solana/wallet-adapter-wallets
+- `@solana/wallet-adapter-react`  
+- `@solana/wallet-adapter-react-ui`  
+- `@solana/wallet-adapter-wallets`  
 
 Solana Libraries:
 
-@solana/web3.js
-
-@solana/spl-token
+- `@solana/web3.js`  
+- `@solana/spl-token`
 
 
 
@@ -119,48 +113,74 @@ Switch assets between games with an intuitive inventory system — assets auto-u
 
 # Getting Started
 
-Prerequisites
-Node.js (Latest LTS)
-npm or yarn
-Solana CLI
-Installation
-Clone the repository:
-git clone [your-repo-url]
-cd stickman-arcade
-Install dependencies:
-npm install
-or
-yarn install
-Set up your environment:
-Create a .env.local file in the root directory
-Add necessary Solana configs
-Start the dev server:
-npm run dev
- or
-yarn dev
-Visit http://localhost:3000 to view the app.
+Make sure you have the following installed on your machine:
+- [Node.js (Latest LTS)](https://nodejs.org/)  or [Yarn](https://yarnpkg.com/)  
+- [Solana CLI](https://docs.solana.com/cli/install-solana-cli-tools)
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/your-username/stickman-arcade.git
+   cd stickman-arcade
+   ```
+
+2. **Install dependencies**
+
+   Using npm:
+   ```bash
+   npm install
+   ```
+
+   Or using Yarn:
+   ```bash
+   yarn install
+   ```
+
+3. **Environment Setup**
+
+   Copy the example environment file:
+   ```bash
+   cp .env.local.example .env.local
+   ```
+   Open `.env.local` and add your Solana configuration:
+   ```env
+   # .env.local
+   SOLANA_NETWORK=devnet
+   ANCHOR_WALLET=~/.config/solana/id.json
+   ANCHOR_PROVIDER_URL=https://api.devnet.solana.com
+   # any other keys your dApp requires...
+   ```
+
+3. **Development**
+
+   Start the development server:
+
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+Your app will be running at [http://localhost:3000](http://localhost:3000).
+
+---
+
 
 🎯 Available Games
 
-Stickman
-Space Invaders
-Pac-Man
-Galaga
-Tetris
+- **Stickman**  
+- **Space Invaders**  
+- **Pac-Man**  
+- **Galaga**  
+- **Tetris**  
 
 💰 Token Integration
 
-Earn unique tokens per game
-Convert tokens to SOL and vice versa
-Legacy token system for retired games
-Full token utility in marketplace and in-game purchases
+- **Earn unique tokens** per game  
+- **Convert tokens ↔ SOL** seamlessly  
+- **Legacy token system** for retired titles  
+- **Full token utility** in marketplace & in-game purchases  
 
-🔧 Development Scripts
-
-npm run dev – Start dev server
-npm run build – Build for production
-npm run start – Run production server
-npm run create-token – Create new SPL token
 
 # How We Are Different
 
@@ -197,9 +217,11 @@ Provide tools for developers to integrate their own games into the Arcade Time e
 # Team
 
 Tan Zhi Wei (Leader)
+
 – Full Stack Developer
 - [LinkedIn](https://www.linkedin.com/in/tanzhiwei0328/)
 
 Phen Jing Yuan  
+
 – Back End Developer and Smart Contract Engineer
 - [LinkedIn](https://www.linkedin.com/in/jing-yuan-phen-b42266295/)
