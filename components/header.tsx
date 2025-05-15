@@ -32,19 +32,8 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'Games' }) => {
 
   return (
     <header className="bg-black border-b border-purple-700/30 text-white p-4 flex justify-between items-center sticky top-0 z-50 arcade-header">
-      {/* User Info Section */}
-      <div className="flex items-center space-x-4">
-        {connected && publicKey && (
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
-              <span className="text-xs font-bold">{publicKey.toString().slice(0, 2)}</span>
-            </div>
-            <span className="text-sm text-gray-300 font-mono">
-              {publicKey.toString().slice(0, 4)}...{publicKey.toString().slice(-4)}
-            </span>
-          </div>
-        )}
-      </div>
+      {/* Empty div to maintain layout with justify-between */}
+      <div className="w-[150px]"></div>
 
       {/* Navigation Tabs */}
       <div className="flex space-x-12 mx-auto relative">
