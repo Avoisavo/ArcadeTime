@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
-/* Load PressStart2P font directly */
+/* 
+  Font is loaded via Next.js font system in fonts.ts 
+  The @font-face declaration below is kept for backwards compatibility
+*/
 @font-face {
   font-family: 'Press Start 2P';
   src: url('/fonts/PressStart2P-Regular.ttf') format('truetype');
@@ -12,7 +15,7 @@
 :root {
   --background: #000000;
   --foreground: #ffffff;
-  --font-family-main: 'Press Start 2P', monospace;
+  --font-family-main: var(--font-press-start-2p), 'Press Start 2P', monospace;
 }
 
 @theme inline {
@@ -31,33 +34,25 @@
 
 /* Make sure all elements use the Press Start 2P font */
 html, body, input, button, textarea, select, div, span, h1, h2, h3, h4, h5, h6, p, a, li {
-  font-family: 'Press Start 2P', monospace !important;
+  font-family: var(--font-family-main) !important;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Press Start 2P', monospace !important;
+  font-family: var(--font-family-main) !important;
 }
 
 /* Global arcade pixelated font styles */
-@font-face {
-  font-family: 'Arcade';
-  src: url('/fonts/PressStart2P-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 .arcade-pixel-font {
-  font-family: 'Press Start 2P', 'Arcade', monospace !important;
+  font-family: var(--font-family-main) !important;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 
 /* Apply pixelated font to all text elements - with stronger selector */
 *, *::before, *::after {
-  font-family: 'Press Start 2P', 'Arcade', monospace !important;
+  font-family: var(--font-family-main) !important;
 }
 
 /* Common arcade style utilities */

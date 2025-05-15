@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { WalletProvider } from './WalletProvider';
 import Header from '@/components/header';
+import { pressStart2P } from './fonts';
 
 export const metadata: Metadata = {
   title: "Arcade Time",
@@ -17,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${pressStart2P.variable}`}>
       <body className="arcade-pixel-font antialiased bg-black min-h-screen">
         <WalletProvider>
           <div className="flex flex-col min-h-screen">
