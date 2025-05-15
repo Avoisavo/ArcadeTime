@@ -217,9 +217,11 @@ Provide tools for developers to integrate their own games into the Arcade Time e
 # Team
 
 Tan Zhi Wei (Leader)
+
 – Full Stack Developer
 - [LinkedIn](https://www.linkedin.com/in/tanzhiwei0328/)
 
 Phen Jing Yuan  
+
 – Back End Developer and Smart Contract Engineer
 - [LinkedIn](https://www.linkedin.com/in/jing-yuan-phen-b42266295/)
