@@ -23,6 +23,8 @@ const Header: React.FC<HeaderProps> = ({ activeTab }) => {
   
   // Determine active tab based on current path
   const determineActiveTab = () => {
+    if (!pathname) return activeTab || 'Games'; // Handle null pathname
+    
     if (pathname.includes('/library') || pathname.includes('/games')) return 'Games';
     if (pathname.includes('/inventory')) return 'Inventory';
     if (pathname.includes('/marketplace')) return 'Marketplace';
