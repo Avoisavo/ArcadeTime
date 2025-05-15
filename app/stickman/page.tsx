@@ -265,7 +265,7 @@ export default function StickmanGame() {
           keysRef.current.up = true;
           break;
         case '1':
-          router.push('/sticman1');
+          router.push('/stickman1');
           break;
         case 'z':
         case 'Z':
