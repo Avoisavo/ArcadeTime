@@ -1,24 +1,49 @@
 import React, { useEffect, useState } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { mintNFT } from '@/utils/nft-minter';
 
 export default function StickWin({ 
-  onClose, 
-  onMint, 
-  mintStatus, 
-  isMinting, 
-  transactionHash 
+  onClose
 }: { 
   onClose: () => void;
-  onMint?: () => Promise<void>;
-  mintStatus?: string;
-  isMinting?: boolean;
-  transactionHash?: string;
 }) {
   const [showImage, setShowImage] = useState(false);
+  const [isMinting, setIsMinting] = useState(false);
+  const [mintStatus, setMintStatus] = useState('');
+  const [transactionHash, setTransactionHash] = useState('');
+  const wallet = useWallet();
 
   useEffect(() => {
     const timer = setTimeout(() => setShowImage(true), 2000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Handler for the mint button
+  const handleMint = async () => {
+    if (!wallet.connected) {
+      setMintStatus('Error: Wallet not connected');
+      return;
+    }
+
+    try {
+      setIsMinting(true);
+      
+      // Call the simplified minting function with fixed metadata URI
+      const result = await mintNFT(
+        wallet,
+        (status) => setMintStatus(status)
+      );
+      
+      // Set the transaction hash to display to the user
+      setTransactionHash(result.signature);
+      setMintStatus(`Successfully minted SigmaStick NFT!`);
+    } catch (error) {
+      console.error('Error minting NFT:', error);
+      setMintStatus(`Error: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      setIsMinting(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
@@ -31,7 +56,7 @@ export default function StickWin({
           </div>
           {/* Asset image */}
           <img
-            src="/inventory/obamastick.png"
+            src="/inventory/sigmastick.png"
             alt="New Asset"
             className={`transition-transform duration-700 ease-out z-10 relative ${showImage ? 'scale-100' : 'scale-0'}`}
             style={{ transformOrigin: 'center', transitionProperty: 'transform', width: '100%', height: '100%' }}
@@ -71,13 +96,13 @@ export default function StickWin({
         )}
         
         <div className="flex flex-col space-y-3 mt-4 w-full">
-          {onMint && !transactionHash && (
+          {!transactionHash && (
             <button
-              onClick={onMint}
-              disabled={isMinting}
+              onClick={handleMint}
+              disabled={isMinting || !wallet.connected}
               className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-md font-bold uppercase tracking-wider hover:from-blue-600 hover:to-purple-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isMinting ? 'Minting...' : 'Mint Token'}
+              {isMinting ? 'Minting...' : wallet.connected ? 'Mint Token' : 'Connect Wallet to Mint'}
             </button>
           )}
           
