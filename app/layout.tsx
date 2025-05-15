@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { WalletProvider } from './WalletProvider';
-import Header from '@/components/header';
+// import { WalletProvider } from './WalletProvider'; // No longer directly needed here
+// import Header from '@/components/header'; // Header is now in RootLayoutClient
 import { pressStart2P } from './fonts';
+import RootLayoutClient from "@/components/RootLayoutClient"; // Import RootLayoutClient
 
 export const metadata: Metadata = {
   title: "Arcade Time",
@@ -20,14 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${pressStart2P.variable}`}>
       <body className="arcade-pixel-font antialiased bg-black min-h-screen">
-        <WalletProvider>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-1">
-              {children}
-            </main>
-          </div>
-        </WalletProvider>
+        <RootLayoutClient>{children}</RootLayoutClient> {/* Use RootLayoutClient here */}
       </body>
     </html>
   );
