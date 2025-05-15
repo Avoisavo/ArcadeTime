@@ -204,7 +204,7 @@ export default function SpaceInvaders() {
     let animationFrameId: number;
 
     const bulletImg = new window.Image();
-    bulletImg.src = '/inventory/obamastick.png';
+    bulletImg.src = '/inventory/sigmastick.png';
     let bulletImgLoaded = false;
     bulletImg.onload = () => { bulletImgLoaded = true; };
 

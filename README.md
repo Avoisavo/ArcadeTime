@@ -56,7 +56,7 @@ Users lacking game tokens can swap SOL to arcade tokens to purchase assets
 *Figure 1: Arcade Time system arcitecture*
 
 
-Arcade Time is built on the Solana blockchain with wallet-based authentication and decentralized token storage. Upon connecting their wallet, users can play games, earn game-specific tokens, and receive in-game asset drops, which are either minted to their wallet or stored for later use. These tokens can be swapped via an exchange system, and a P2P marketplace enables the trading of game assets and inventory. The architecture supports seamless token flow, enabling a full play-to-earn experience with asset portability and legacy support.
+Users can access Arcade Time by connecting their Phantom wallet. From there, they can choose any game on the platform to play and earn rewards. When they win, the game drops both tokens and items — tokens are sent directly to their wallet, while game assets are minted as NFTs via Metaplex and linked to the wallet. Users can then swap tokens for SOL, trade items, or transfer assets between games within the platform. If they have extra items, they can list them for sale in our built-in P2P marketplace.
 
 # Tech Stack Overview
 
